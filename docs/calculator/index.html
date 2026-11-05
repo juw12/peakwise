@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Watt Reserve | 工廠儲能效益試算 Factory Battery Calculator</title>
+<style>
+  :root {
+    --ink: #1d2733;
+    --muted: #5b6b7b;
+    --accent: #0f7b5f;
+    --accent-soft: #e5f4ef;
+    --warn: #b4531a;
+    --card: #ffffff;
+    --bg: #f3f6f8;
+    --line: #dde4ea;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: "Noto Sans TC", "Microsoft JhengHei", "Segoe UI", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    background: var(--ink);
+    color: #fff;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 20px;
+  }
+  header .sub {
+    font-size: 13px;
+    opacity: 0.8;
+  }
+  header button {
+    margin-left: 8px;
+    padding: 7px 14px;
+    border: 1px solid #fff;
+    border-radius: 6px;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+  }
+  main {
+    display: grid;
+    grid-template-columns: minmax(320px, 420px) 1fr;
+    gap: 20px;
+    padding: 20px 28px 40px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  h2 {
+    margin: 0 0 12px;
+    font-size: 17px;
+  }
+  h3 {
+    margin: 18px 0 8px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  label.field {
+    display: grid;
+    grid-template-columns: 1fr 130px;
+    align-items: center;
+    gap: 8px;
+    margin: 7px 0;
+    font-size: 13px;
+  }
+  label.check {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin: 8px 0;
+    font-size: 13px;
+  }
+  input[type="number"] {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 13px;
+    text-align: right;
+  }
+  .hint {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  details {
+    margin-top: 12px;
+  }
+  summary {
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--accent);
+  }
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .kpi {
+    background: var(--accent-soft);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .kpi .label {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .kpi .value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+  th,
+  td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--line);
+    text-align: right;
+  }
+  th:first-child,
+  td:first-child {
+    text-align: left;
+  }
+  tr.best td {
+    background: var(--accent-soft);
+    font-weight: 700;
+  }
+  .notice {
+    margin-top: 14px;
+    padding: 10px 12px;
+    border-left: 4px solid var(--warn);
+    background: #fdf3ec;
+    font-size: 12px;
+    color: #6b3a17;
+  }
+  canvas {
+    width: 100%;
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  footer {
+    padding: 0 28px 30px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  #testout {
+    white-space: pre-wrap;
+    font-size: 12px;
+    background: #111;
+    color: #9f9;
+    padding: 10px;
+  }
+  @media (max-width: 900px) {
+    main {
+      grid-template-columns: 1fr;
+    }
+    .kpis {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media print {
+    header button,
+    #inputs details,
+    footer .noprint {
+      display: none;
+    }
+    body {
+      background: #fff;
+    }
+    main {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <a href="../" style="color:#9fe8cc;font-size:13px;text-decoration:none;" data-i18n="back"></a>
+    <h1 data-i18n="title"></h1>
+    <div class="sub" data-i18n="subtitle"></div>
+  </div>
+  <div>
+    <button id="langButton" type="button">English</button>
+    <button id="printButton" type="button" data-i18n="print"></button>
+  </div>
+</header>
+
+<main>
+  <section class="card" id="inputs">
+    <h2 data-i18n="inputsTitle"></h2>
+    <div id="siteFields"></div>
+    <div id="siteChecks"></div>
+    <details>
+      <summary data-i18n="advancedTariff"></summary>
+      <div id="tariffFields"></div>
+    </details>
+    <details>
+      <summary data-i18n="advancedCost"></summary>
+      <div id="costFields"></div>
+    </details>
+  </section>
+
+  <section class="card" id="results">
+    <h2 data-i18n="resultsTitle"></h2>
+    <div class="kpis">
+      <div class="kpi"><div class="label" data-i18n="kpiSize"></div><div class="value" id="kpiSize">–</div></div>
+      <div class="kpi"><div class="label" data-i18n="kpiPayback"></div><div class="value" id="kpiPayback">–</div></div>
+      <div class="kpi"><div class="label" data-i18n="kpiIrr"></div><div class="value" id="kpiIrr">–</div></div>
+      <div class="kpi"><div class="label" data-i18n="kpiNpv"></div><div class="value" id="kpiNpv">–</div></div>
+    </div>
+    <table id="detailTable"></table>
+    <canvas id="cashChart" width="900" height="260"></canvas>
+    <h3 data-i18n="sizeTableTitle"></h3>
+    <table id="sizeTable"></table>
+    <div class="notice" id="notice"></div>
+  </section>
+</main>
+
+<footer>
+  <div data-i18n="sources"></div>
+  <div class="noprint" data-i18n="disclaimer"></div>
+</footer>
+<pre id="testout" hidden></pre>
+
+<script>
+"use strict";
+
+const I18N = {
+  zh: {
+    back: "← Watt Reserve 首頁",
+    title: "Watt Reserve｜工廠表後儲能效益試算",
+    subtitle: "輸入台電電費單資料，立即估算儲能容量、補助、回收年限與報酬率",
+    print: "列印 / 存成 PDF",
+    inputsTitle: "工廠資料（取自台電電費單）",
+    advancedTariff: "進階：電價參數（預設 114年10月 高壓三段式）",
+    advancedCost: "進階：成本與技術參數",
+    resultsTitle: "試算結果",
+    kpiSize: "建議容量",
+    kpiPayback: "回收年限",
+    kpiIrr: "專案報酬率 IRR",
+    kpiNpv: "15年淨現值 NPV",
+    sizeTableTitle: "不同容量比較",
+    years: "年",
+    never: "無法回收",
+    rows: {
+      power: "功率 / 容量",
+      grossCapex: "建置成本",
+      subsidy: "經濟部補助",
+      netCapex: "自付淨投資",
+      energySaving: "第一年電能費節省",
+      demandSaving: "第一年基本電費節省",
+      om: "每年維運費",
+      cycles: "每年等效循環次數",
+      backup: "停電備援（關鍵負載）",
+      eligibility: "補助資格",
+    },
+    eligible: "符合（需經濟部審核）",
+    notEligible: "不符合",
+    sizeCols: ["容量 MWh", "淨投資 (百萬)", "第一年節省 (百萬)", "回收 (年)", "IRR", "NPV (百萬)"],
+    hours: "小時",
+    notice:
+      "本試算為初步估算：以每月尖峰／半尖峰用電推估可放電量，實際容量須依 15 分鐘需量資料、契約容量結構與廠商報價確認。" +
+      "補助條件（園區廠商、國產電芯、非陸製通訊模組、3 年夜尖峰移轉執行率 80%）以經濟部最新公告為準。" +
+      "已排除輔助服務收益（dReg/E-dReg 價格因市場飽和接近 0）。",
+    sources:
+      "資料來源：台電 114年10月電價表（高壓三段式）；經濟部產業儲能設備補助（每 MWh 500 萬、≤50%、1–10 MWh）；" +
+      "建置成本約每 MWh 1,250 萬（聯合報 2025-10）。",
+    disclaimer: "© Watt Reserve。本工具僅供參考，不構成投資建議。",
+    fields: {
+      contractKw: ["經常契約容量 (kW)", "電費單「經常契約」"],
+      summerPeakKwh: ["夏月 尖峰 每月用電 (kWh)", "夏月帳單「尖峰」度數（16–22 時）"],
+      nonsummerSemiKwh: ["非夏月 半尖峰 每月用電 (kWh)", "非夏月帳單「半尖峰」度數"],
+      criticalKw: ["停電時關鍵負載 (kW)", "需維持運轉的設備"],
+      fixedSizeKwh: ["指定容量 (kWh，0 = 自動建議)", ""],
+      inPark: ["工廠位於工業區／科學園區／科技產業園區", ""],
+      domesticCells: ["同意採用國產電芯（補助要求）", ""],
+      peakIsMax: ["全廠最高需量出現在 16–22 尖峰時段", "勾選 = 基本電費節省較大"],
+      summerPeak: ["夏月 尖峰 (NT$/kWh)", ""],
+      summerSemi: ["夏月 半尖峰 (NT$/kWh)", ""],
+      summerOff: ["夏月 離峰 (NT$/kWh)", ""],
+      nonsummerSemi: ["非夏月 半尖峰 (NT$/kWh)", ""],
+      nonsummerOff: ["非夏月 離峰 (NT$/kWh)", ""],
+      demandRegular: ["經常契約基本電費 (NT$/kW·月)", ""],
+      demandSemi: ["半尖峰契約基本電費 (NT$/kW·月)", ""],
+      capexPerKwh: ["建置成本 (NT$/kWh)", ""],
+      subsidyPerKwh: ["補助 (NT$/kWh)", ""],
+      durationH: ["放電時數 (h)", "容量 ÷ 功率"],
+      rte: ["往返效率", ""],
+      usableFrac: ["可用放電深度", ""],
+      omFrac: ["每年維運 (% 建置成本)", ""],
+      fade: ["每年衰退", ""],
+      cycleLife: ["循環壽命 (次)", ""],
+      lifeYears: ["評估年限 (年)", ""],
+      discount: ["折現率", ""],
+      summerWorkdays: ["夏月工作天數 (5/16–10/15)", ""],
+      nonsummerWorkdays: ["非夏月工作天數", ""],
+    },
+  },
+  en: {
+    back: "← Watt Reserve home",
+    title: "Watt Reserve | Factory Battery Storage Calculator",
+    subtitle: "Enter your Taipower bill data to estimate battery size, subsidy, payback and return",
+    print: "Print / Save PDF",
+    inputsTitle: "Factory data (from Taipower bill)",
+    advancedTariff: "Advanced: tariff (default Oct 2025 high-voltage 3-stage TOU)",
+    advancedCost: "Advanced: cost & technical",
+    resultsTitle: "Results",
+    kpiSize: "Recommended size",
+    kpiPayback: "Payback",
+    kpiIrr: "Project IRR",
+    kpiNpv: "15-yr NPV",
+    sizeTableTitle: "Size comparison",
+    years: "yr",
+    never: "never",
+    rows: {
+      power: "Power / energy",
+      grossCapex: "Installed cost",
+      subsidy: "MOEA subsidy",
+      netCapex: "Net investment",
+      energySaving: "Year-1 energy-charge saving",
+      demandSaving: "Year-1 demand-charge saving",
+      om: "Annual O&M",
+      cycles: "Equivalent cycles / yr",
+      backup: "Blackout backup (critical load)",
+      eligibility: "Subsidy eligibility",
+    },
+    eligible: "Eligible (subject to MOEA review)",
+    notEligible: "Not eligible",
+    sizeCols: ["Size MWh", "Net capex (M)", "Yr-1 saving (M)", "Payback (yr)", "IRR", "NPV (M)"],
+    hours: "h",
+    notice:
+      "Preliminary estimate: dischargeable energy is inferred from monthly peak / semi-peak consumption. Final sizing needs 15-minute " +
+      "demand data, the contract-capacity structure and supplier quotes. Subsidy terms (park-located factory, domestic cells, " +
+      "non-PRC comms modules, 3-year evening peak-shift at 80 %) per latest MOEA notice. Ancillary-service revenue excluded " +
+      "(dReg/E-dReg prices ≈ 0 due to market saturation).",
+    sources:
+      "Sources: Taipower tariff effective 2025-10-01 (high-voltage 3-stage TOU); MOEA industrial storage subsidy " +
+      "(NT$5 M/MWh, ≤50 %, 1–10 MWh); build cost ≈ NT$12.5 M/MWh (UDN, Oct 2025).",
+    disclaimer: "© Watt Reserve. For reference only; not investment advice.",
+    fields: {
+      contractKw: ["Regular contract capacity (kW)", "Bill: 經常契約"],
+      summerPeakKwh: ["Summer peak kWh per month", "Summer bill 'peak' (16–22)"],
+      nonsummerSemiKwh: ["Non-summer semi-peak kWh per month", "Non-summer bill 'semi-peak'"],
+      criticalKw: ["Critical load in a blackout (kW)", ""],
+      fixedSizeKwh: ["Fixed size (kWh, 0 = auto)", ""],
+      inPark: ["Factory is in an industrial / science / tech park", ""],
+      domesticCells: ["Accept domestic battery cells (subsidy rule)", ""],
+      peakIsMax: ["Factory max demand occurs in 16–22 peak", "Checked = larger demand saving"],
+      summerPeak: ["Summer peak (NT$/kWh)", ""],
+      summerSemi: ["Summer semi-peak (NT$/kWh)", ""],
+      summerOff: ["Summer off-peak (NT$/kWh)", ""],
+      nonsummerSemi: ["Non-summer semi-peak (NT$/kWh)", ""],
+      nonsummerOff: ["Non-summer off-peak (NT$/kWh)", ""],
+      demandRegular: ["Regular contract demand charge (NT$/kW·mo)", ""],
+      demandSemi: ["Semi-peak contract demand charge (NT$/kW·mo)", ""],
+      capexPerKwh: ["Installed cost (NT$/kWh)", ""],
+      subsidyPerKwh: ["Subsidy (NT$/kWh)", ""],
+      durationH: ["Duration (h)", "energy ÷ power"],
+      rte: ["Round-trip efficiency", ""],
+      usableFrac: ["Usable depth of discharge", ""],
+      omFrac: ["Annual O&M (% of capex)", ""],
+      fade: ["Capacity fade per year", ""],
+      cycleLife: ["Cycle life", ""],
+      lifeYears: ["Evaluation period (yr)", ""],
+      discount: ["Discount rate", ""],
+      summerWorkdays: ["Summer workdays (5/16–10/15)", ""],
+      nonsummerWorkdays: ["Non-summer workdays", ""],
+    },
+  },
+};
+
+const FIELDS = [
+  { id: "contractKw", group: "site", value: 3000, step: 100 },
+  { id: "summerPeakKwh", group: "site", value: 300000, step: 1000 },
+  { id: "nonsummerSemiKwh", group: "site", value: 600000, step: 1000 },
+  { id: "criticalKw", group: "site", value: 300, step: 50 },
+  { id: "fixedSizeKwh", group: "site", value: 0, step: 500 },
+  { id: "inPark", group: "check", value: true },
+  { id: "domesticCells", group: "check", value: true },
+  { id: "peakIsMax", group: "check", value: false },
+  { id: "summerPeak", group: "tariff", value: 9.39, step: 0.01 },
+  { id: "summerSemi", group: "tariff", value: 5.85, step: 0.01 },
+  { id: "summerOff", group: "tariff", value: 2.53, step: 0.01 },
+  { id: "nonsummerSemi", group: "tariff", value: 5.47, step: 0.01 },
+  { id: "nonsummerOff", group: "tariff", value: 2.32, step: 0.01 },
+  { id: "demandRegular", group: "tariff", value: 223.6, step: 0.1 },
+  { id: "demandSemi", group: "tariff", value: 166.9, step: 0.1 },
+  { id: "capexPerKwh", group: "cost", value: 12500, step: 100 },
+  { id: "subsidyPerKwh", group: "cost", value: 5000, step: 100 },
+  { id: "durationH", group: "cost", value: 2, step: 0.5 },
+  { id: "rte", group: "cost", value: 0.88, step: 0.01 },
+  { id: "usableFrac", group: "cost", value: 0.9, step: 0.01 },
+  { id: "omFrac", group: "cost", value: 0.015, step: 0.001 },
+  { id: "fade", group: "cost", value: 0.02, step: 0.005 },
+  { id: "cycleLife", group: "cost", value: 6000, step: 500 },
+  { id: "lifeYears", group: "cost", value: 15, step: 1 },
+  { id: "discount", group: "cost", value: 0.06, step: 0.005 },
+  { id: "summerWorkdays", group: "cost", value: 106, step: 1 },
+  { id: "nonsummerWorkdays", group: "cost", value: 142, step: 1 },
+];
+
+const SUBSIDY_MIN_KWH = 1000;
+const SUBSIDY_MAX_KWH = 10000;
+const ABSORB_MARGIN = 0.9;          // keep 10 % margin: behind-the-meter energy cannot be exported
+const SUMMER_PEAK_HOURS = 6;        // 16:00-22:00
+const NONSUMMER_SEMI_HOURS = 15;    // 06-11 and 14-24
+const AUGMENTATION_FRACTION = 0.25;
+const AUGMENTATION_PRICE_FACTOR = 0.6;
+
+const languageParam = new URLSearchParams(location.search).get("lang");
+let language = languageParam === "en" ? "en" : "zh";
+
+function buildForm() {
+  const containers = {
+    site: document.getElementById("siteFields"),
+    check: document.getElementById("siteChecks"),
+    tariff: document.getElementById("tariffFields"),
+    cost: document.getElementById("costFields"),
+  };
+  for (const field of FIELDS) {
+    const wrapper = document.createElement("label");
+    if (field.group === "check") {
+      wrapper.className = "check";
+      wrapper.innerHTML =
+        `<input type="checkbox" id="${field.id}" ${field.value ? "checked" : ""}>` +
+        `<span data-field="${field.id}"></span>`;
+    } else {
+      wrapper.className = "field";
+      wrapper.innerHTML =
+        `<span><span data-field="${field.id}"></span><br><span class="hint" data-hint="${field.id}"></span></span>` +
+        `<input type="number" id="${field.id}" value="${field.value}" step="${field.step}">`;
+    }
+    containers[field.group].appendChild(wrapper);
+  }
+  document.querySelectorAll("#inputs input").forEach((element) => {
+    element.addEventListener("input", render);
+  });
+}
+
+function applyLanguage() {
+  const strings = I18N[language];
+  document.documentElement.lang = language === "zh" ? "zh-Hant" : "en";
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    element.textContent = strings[element.dataset.i18n];
+  });
+  document.querySelectorAll("[data-field]").forEach((element) => {
+    element.textContent = strings.fields[element.dataset.field][0];
+  });
+  document.querySelectorAll("[data-hint]").forEach((element) => {
+    element.textContent = strings.fields[element.dataset.hint][1];
+  });
+  document.getElementById("langButton").textContent = language === "zh" ? "English" : "中文";
+  document.getElementById("notice").textContent = strings.notice;
+}
+
+function readInputs() {
+  const values = {};
+  for (const field of FIELDS) {
+    const element = document.getElementById(field.id);
+    values[field.id] = field.group === "check" ? element.checked : parseFloat(element.value) || 0;
+  }
+  return values;
+}
+
+function cycleMargin(sellPrice, buyPrice, p) {
+  // NT$ per kWh of nameplate per full cycle (before battery wear)
+  const discharged = p.usableFrac;
+  const charged = discharged / p.rte;
+  return discharged * sellPrice - charged * buyPrice;
+}
+
+function evaluateSize(sizeKwh, p) {
+  const powerKw = sizeKwh / p.durationH;
+  const grossCapex = p.capexPerKwh * sizeKwh;
+  const eligible = p.inPark && p.domesticCells && sizeKwh >= SUBSIDY_MIN_KWH && sizeKwh <= SUBSIDY_MAX_KWH;
+  const subsidy = eligible ? Math.min(p.subsidyPerKwh * sizeKwh, 0.5 * grossCapex) : 0;
+  const netCapex = grossCapex - subsidy;
+  const usableKwh = sizeKwh * p.usableFrac;
+  const wearPerCycle = netCapex / sizeKwh / p.cycleLife;
+
+  const summerDaysPerMonth = p.summerWorkdays / 5;
+  const nonsummerDaysPerMonth = p.nonsummerWorkdays / 7;
+  const summerPeakDaily = (p.summerPeakKwh / summerDaysPerMonth) * ABSORB_MARGIN;
+  const nonsummerSemiDaily = (p.nonsummerSemiKwh / nonsummerDaysPerMonth) * ABSORB_MARGIN;
+  const summerFirstUse = Math.min(usableKwh, summerPeakDaily);
+
+  const options = [
+    { margin: cycleMargin(p.summerPeak, p.summerOff, p), days: p.summerWorkdays, absorb: summerPeakDaily },
+    { margin: cycleMargin(p.summerPeak, p.summerSemi, p), days: p.summerWorkdays, absorb: summerPeakDaily - summerFirstUse },
+    { margin: cycleMargin(p.nonsummerSemi, p.nonsummerOff, p), days: p.nonsummerWorkdays, absorb: nonsummerSemiDaily * 5 / NONSUMMER_SEMI_HOURS },
+    { margin: cycleMargin(p.nonsummerSemi, p.nonsummerOff, p), days: p.nonsummerWorkdays, absorb: nonsummerSemiDaily * 10 / NONSUMMER_SEMI_HOURS },
+  ];
+
+  let energySaving = 0;
+  let cyclesPerYear = 0;
+  for (const option of options) {
+    const fraction = Math.max(0, Math.min(1, option.absorb / usableKwh));
+    if (fraction > 0 && option.margin > wearPerCycle) {
+      energySaving += option.margin * fraction * option.days * sizeKwh;
+      cyclesPerYear += fraction * option.days;
+    }
+  }
+
+  const summerPeakAvgKw = (p.summerPeakKwh / summerDaysPerMonth) / SUMMER_PEAK_HOURS;
+  const shaveKw = Math.min(powerKw, sizeKwh / SUMMER_PEAK_HOURS, summerPeakAvgKw * ABSORB_MARGIN);
+  const demandRate = p.peakIsMax ? p.demandRegular : p.demandRegular - p.demandSemi;
+  const demandSaving = shaveKw * demandRate * 12;
+
+  const om = p.omFrac * grossCapex;
+  const flows = [-netCapex];
+  let lifetimeCycles = 0;
+  for (let year = 1; year <= p.lifeYears; year += 1) {
+    const health = Math.pow(1 - p.fade, year - 1);
+    lifetimeCycles += cyclesPerYear;
+    let flow = (energySaving + demandSaving) * health - om;
+    if (lifetimeCycles > p.cycleLife && lifetimeCycles - cyclesPerYear <= p.cycleLife) {
+      flow -= AUGMENTATION_FRACTION * grossCapex * AUGMENTATION_PRICE_FACTOR;
+    }
+    flows.push(flow);
+  }
+
+  let npv = 0;
+  const cumulative = [];
+  let running = 0;
+  flows.forEach((flow, year) => {
+    npv += flow / Math.pow(1 + p.discount, year);
+    running += flow;
+    cumulative.push(running);
+  });
+  const paybackIndex = cumulative.findIndex((value) => value >= 0);
+
+  return {
+    sizeKwh,
+    powerKw,
+    eligible,
+    grossCapex,
+    subsidy,
+    netCapex,
+    energySaving,
+    demandSaving,
+    om,
+    cyclesPerYear,
+    npv,
+    irr: internalRate(flows),
+    payback: paybackIndex >= 0 ? paybackIndex : null,
+    cumulative,
+    backupHours: p.criticalKw > 0 ? usableKwh / p.criticalKw : null,
+  };
+}
+
+function internalRate(flows) {
+  const total = flows.reduce((sum, flow) => sum + flow, 0);
+  if (total <= 0) {
+    return null;
+  }
+  let low = -0.5;
+  let high = 1.0;
+  let mid = 0;
+  for (let iteration = 0; iteration < 200; iteration += 1) {
+    mid = (low + high) / 2;
+    const value = flows.reduce((sum, flow, year) => sum + flow / Math.pow(1 + mid, year), 0);
+    if (value > 0) {
+      low = mid;
+    } else {
+      high = mid;
+    }
+  }
+  return mid;
+}
+
+function evaluateAll(p) {
+  // Battery power must not exceed the contract capacity or the average 16-22 peak-hour load
+  const summerDaysPerMonth = p.summerWorkdays / 5;
+  const summerPeakAvgKw = (p.summerPeakKwh / summerDaysPerMonth) / SUMMER_PEAK_HOURS;
+  const maxPowerKw = Math.min(p.contractKw, summerPeakAvgKw * ABSORB_MARGIN);
+  const candidates = [];
+  for (let size = 500; size <= 10000; size += 500) {
+    if (size / p.durationH <= maxPowerKw || size === 500) {
+      candidates.push(evaluateSize(size, p));
+    }
+  }
+  let best;
+  if (p.fixedSizeKwh > 0) {
+    best = evaluateSize(p.fixedSizeKwh, p);
+  } else {
+    best = candidates.reduce((top, item) => (item.npv > top.npv ? item : top), candidates[0]);
+  }
+  return { best, candidates };
+}
+
+function millions(value) {
+  return (value / 1e6).toFixed(2);
+}
+
+function ntd(value) {
+  return "NT$ " + Math.round(value).toLocaleString("en-US");
+}
+
+function render() {
+  const p = readInputs();
+  const strings = I18N[language];
+  const { best, candidates } = evaluateAll(p);
+
+  document.getElementById("kpiSize").textContent =
+    `${(best.sizeKwh / 1000).toFixed(1)} MWh`;
+  document.getElementById("kpiPayback").textContent =
+    best.payback === null ? strings.never : `${best.payback} ${strings.years}`;
+  document.getElementById("kpiIrr").textContent =
+    best.irr === null ? "–" : `${(best.irr * 100).toFixed(1)} %`;
+  document.getElementById("kpiNpv").textContent = `${millions(best.npv)} M`;
+
+  const rows = strings.rows;
+  const detailRows = [
+    [rows.power, `${(best.powerKw / 1000).toFixed(2)} MW / ${(best.sizeKwh / 1000).toFixed(1)} MWh`],
+    [rows.grossCapex, ntd(best.grossCapex)],
+    [rows.subsidy, ntd(best.subsidy)],
+    [rows.netCapex, ntd(best.netCapex)],
+    [rows.energySaving, ntd(best.energySaving)],
+    [rows.demandSaving, ntd(best.demandSaving)],
+    [rows.om, ntd(best.om)],
+    [rows.cycles, best.cyclesPerYear.toFixed(0)],
+    [rows.backup, best.backupHours === null ? "–" : `${best.backupHours.toFixed(1)} ${strings.hours}`],
+    [rows.eligibility, best.eligible ? strings.eligible : strings.notEligible],
+  ];
+  document.getElementById("detailTable").innerHTML = detailRows
+    .map(([label, value]) => `<tr><td>${label}</td><td>${value}</td></tr>`)
+    .join("");
+
+  const header = `<tr>${strings.sizeCols.map((col) => `<th>${col}</th>`).join("")}</tr>`;
+  const body = candidates
+    .filter((item) => item.sizeKwh % 1000 === 0 || item.sizeKwh === best.sizeKwh)
+    .map((item) => {
+      const rowClass = item.sizeKwh === best.sizeKwh ? "best" : "";
+      return (
+        `<tr class="${rowClass}"><td>${(item.sizeKwh / 1000).toFixed(1)}</td>` +
+        `<td>${millions(item.netCapex)}</td>` +
+        `<td>${millions(item.energySaving + item.demandSaving)}</td>` +
+        `<td>${item.payback === null ? strings.never : item.payback}</td>` +
+        `<td>${item.irr === null ? "–" : (item.irr * 100).toFixed(1) + " %"}</td>` +
+        `<td>${millions(item.npv)}</td></tr>`
+      );
+    })
+    .join("");
+  document.getElementById("sizeTable").innerHTML = header + body;
+
+  drawChart(best.cumulative);
+  return { best, candidates };
+}
+
+function drawChart(cumulative) {
+  const canvas = document.getElementById("cashChart");
+  const context = canvas.getContext("2d");
+  const width = canvas.width;
+  const height = canvas.height;
+  const pad = 46;
+  context.clearRect(0, 0, width, height);
+
+  const values = cumulative.map((value) => value / 1e6);
+  const maxValue = Math.max(...values, 0);
+  const minValue = Math.min(...values, 0);
+  const span = maxValue - minValue || 1;
+  const x = (index) => pad + (index / (values.length - 1)) * (width - 2 * pad);
+  const y = (value) => height - pad - ((value - minValue) / span) * (height - 2 * pad);
+
+  context.strokeStyle = "#999";
+  context.beginPath();
+  context.moveTo(pad, y(0));
+  context.lineTo(width - pad, y(0));
+  context.stroke();
+
+  context.fillStyle = "#5b6b7b";
+  context.font = "12px sans-serif";
+  context.fillText(language === "zh" ? "累計現金流 (百萬 NT$)" : "Cumulative cash flow (NT$ M)", pad, 18);
+  values.forEach((value, index) => {
+    if (index % 3 === 0) {
+      context.fillText(String(index), x(index) - 4, height - pad + 16);
+    }
+  });
+  context.fillText(maxValue.toFixed(0), 6, y(maxValue) + 4);
+  context.fillText(minValue.toFixed(0), 6, y(minValue) + 4);
+
+  context.strokeStyle = "#0f7b5f";
+  context.lineWidth = 3;
+  context.beginPath();
+  values.forEach((value, index) => {
+    if (index === 0) {
+      context.moveTo(x(index), y(value));
+    } else {
+      context.lineTo(x(index), y(value));
+    }
+  });
+  context.stroke();
+}
+
+function selfTest() {
+  // Must reproduce taiwan_pilot.py: current tariff, subsidy, low demand case, 2 MWh, unconstrained load
+  const overrides = {
+    summerPeakKwh: 1e8,
+    nonsummerSemiKwh: 1e8,
+    fixedSizeKwh: 2000,
+    criticalKw: 300,
+  };
+  for (const [id, value] of Object.entries(overrides)) {
+    document.getElementById(id).value = value;
+  }
+  document.getElementById("inPark").checked = true;
+  document.getElementById("domesticCells").checked = true;
+  document.getElementById("peakIsMax").checked = false;
+  const { best } = render();
+  const output = document.getElementById("testout");
+  output.hidden = false;
+  output.textContent = JSON.stringify({
+    selftest: true,
+    netCapexM: +(best.netCapex / 1e6).toFixed(3),
+    energySavingM: +(best.energySaving / 1e6).toFixed(3),
+    demandSavingM: +(best.demandSaving / 1e6).toFixed(3),
+    cycles: +best.cyclesPerYear.toFixed(1),
+    payback: best.payback,
+    irrPct: +(best.irr * 100).toFixed(2),
+    npvM: +(best.npv / 1e6).toFixed(2),
+    expected: { netCapexM: 15, energySavingM: 3.21, cycles: 496, payback: 6, irrPct: 15.94, npvM: 9.36 },
+  });
+}
+
+document.getElementById("langButton").addEventListener("click", () => {
+  language = language === "zh" ? "en" : "zh";
+  applyLanguage();
+  render();
+});
+document.getElementById("printButton").addEventListener("click", () => window.print());
+
+buildForm();
+applyLanguage();
+if (location.hash === "#selftest") {
+  selfTest();
+} else {
+  render();
+}
+</script>
+</body>
+</html>

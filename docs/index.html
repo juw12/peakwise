@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Watt Reserve | Factory battery storage calculator for Taiwan</title>
+<meta name="description" content="Free calculator for Taiwan factories: turn your Taipower bill into battery size, MOEA subsidy, payback, IRR and blackout backup in seconds. Runs in your browser.">
+<meta property="og:title" content="Watt Reserve: own your power">
+<meta property="og:description" content="Taipower bill in, factory battery business case out: size, subsidy, payback, IRR, backup.">
+<meta property="og:image" content="https://juw12.github.io/watt-reserve/media/banner.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<style>
+  :root {
+    --ink: #0f1720;
+    --ink-2: #1d2733;
+    --text: #e8eef3;
+    --muted: #93a4b3;
+    --accent: #2ee6a0;
+    --accent-deep: #0f7b5f;
+    --gold: #f5c542;
+    --card: #16212c;
+    --line: #26343f;
+    --paper: #f4f7f9;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    font-family: "Inter", "Noto Sans TC", "Microsoft JhengHei", "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    background: var(--ink);
+    line-height: 1.55;
+  }
+  a {
+    color: var(--accent);
+  }
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(15, 23, 32, 0.88);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 62px;
+  }
+  .logo {
+    font-weight: 800;
+    font-size: 19px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .logo span {
+    color: var(--accent);
+  }
+  .nav-links {
+    display: flex;
+    gap: 22px;
+    align-items: center;
+    font-size: 14px;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .nav-links a:hover {
+    color: var(--text);
+  }
+  .btn {
+    display: inline-block;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 15px;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #04261b;
+  }
+  .btn-ghost {
+    border-color: var(--line);
+    color: var(--text);
+    background: transparent;
+  }
+  .btn-small {
+    padding: 7px 14px;
+    font-size: 13px;
+  }
+  header.hero {
+    position: relative;
+    overflow: hidden;
+    padding: 90px 0 70px;
+    background:
+      radial-gradient(800px 420px at 85% 10%, rgba(46, 230, 160, 0.18), transparent 60%),
+      radial-gradient(700px 400px at 5% 90%, rgba(245, 197, 66, 0.10), transparent 60%),
+      var(--ink);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .eyebrow {
+    display: inline-block;
+    padding: 5px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  h1 {
+    font-size: 58px;
+    line-height: 1.05;
+    margin: 18px 0 18px;
+    letter-spacing: -1px;
+  }
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .lead {
+    font-size: 19px;
+    color: #c4d1dc;
+    max-width: 560px;
+  }
+  .cta-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  .privacy {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .example {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 26px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  }
+  .example h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .example .big {
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .example-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .metric {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .metric .label {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .metric .value {
+    font-size: 22px;
+    font-weight: 800;
+  }
+  .example small {
+    display: block;
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .strip {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--ink-2);
+  }
+  .strip .wrap {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    padding-top: 26px;
+    padding-bottom: 26px;
+  }
+  .strip .value {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--gold);
+  }
+  .strip .label {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  section {
+    padding: 80px 0;
+  }
+  section h2 {
+    font-size: 36px;
+    margin: 0 0 12px;
+    letter-spacing: -0.5px;
+  }
+  section .sub {
+    color: var(--muted);
+    max-width: 680px;
+    margin: 0 0 36px;
+    font-size: 17px;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .step {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .step .num {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(46, 230, 160, 0.14);
+    color: var(--accent);
+    font-weight: 800;
+  }
+  .step h3 {
+    margin: 14px 0 8px;
+  }
+  .step p {
+    margin: 0;
+    color: #b9c7d2;
+    font-size: 15px;
+  }
+  .light {
+    background: var(--paper);
+    color: var(--ink-2);
+  }
+  .light .sub {
+    color: #5b6b7b;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(15, 23, 32, 0.08);
+  }
+  th,
+  td {
+    padding: 13px 16px;
+    text-align: right;
+    border-bottom: 1px solid #e3e9ee;
+  }
+  th:first-child,
+  td:first-child,
+  th:nth-child(2),
+  td:nth-child(2) {
+    text-align: left;
+  }
+  th {
+    background: #eef3f6;
+    font-size: 13px;
+    color: #5b6b7b;
+  }
+  tr.highlight td {
+    background: #e5f4ef;
+    font-weight: 700;
+  }
+  .note {
+    font-size: 13px;
+    color: #5b6b7b;
+    margin-top: 12px;
+  }
+  .why {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .why .item {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px;
+  }
+  .why .item b {
+    display: block;
+    font-size: 22px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .why .item p {
+    margin: 0;
+    color: #b9c7d2;
+  }
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .phase {
+    border-radius: 16px;
+    padding: 22px;
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .phase.live {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent) inset;
+  }
+  .phase .tag {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .phase.live .tag {
+    color: var(--accent);
+  }
+  .phase h3 {
+    margin: 8px 0 6px;
+    font-size: 18px;
+  }
+  .phase p {
+    margin: 0;
+    color: #b9c7d2;
+    font-size: 14px;
+  }
+  details {
+    background: #fff;
+    border: 1px solid #e3e9ee;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+  }
+  summary {
+    cursor: pointer;
+    font-weight: 700;
+  }
+  details p {
+    margin: 10px 0 0;
+    color: #44525f;
+  }
+  .sources li {
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+  .final {
+    text-align: center;
+    background:
+      radial-gradient(600px 300px at 50% 0%, rgba(46, 230, 160, 0.16), transparent 70%),
+      var(--ink);
+  }
+  .final h2 {
+    font-size: 40px;
+  }
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 30px 0 40px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  footer .wrap {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  @media (max-width: 900px) {
+    .hero-grid,
+    .steps,
+    .why,
+    .roadmap {
+      grid-template-columns: 1fr;
+    }
+    .strip .wrap {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    h1 {
+      font-size: 42px;
+    }
+    .nav-links a.hide-mobile {
+      display: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#">⚡ Watt<span>Reserve</span></a>
+    <div class="nav-links">
+      <a class="hide-mobile" href="#how" data-zh="運作方式">How it works</a>
+      <a class="hide-mobile" href="#numbers" data-zh="試算數字">Numbers</a>
+      <a class="hide-mobile" href="#roadmap" data-zh="路線圖">Roadmap</a>
+      <a class="hide-mobile" href="#faq" data-zh="常見問題">FAQ</a>
+      <button class="btn btn-ghost btn-small" id="langToggle" type="button">中文</button>
+      <a class="btn btn-primary btn-small calc-link" href="calculator/" data-zh="開始試算">Open calculator</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow" data-zh="台灣工廠 · 表後儲能 · 免費試算">Taiwan factories · behind-the-meter storage · free</span>
+      <h1 data-zh="掌握你的<em>電力</em>。">Own your <em>power</em>.</h1>
+      <p class="lead" data-zh="輸入台電電費單，幾秒內算出工廠儲能的最適容量、經濟部補助、回收年限、IRR 與停電備援時數。">
+        Turn your Taipower bill into a factory battery business case in seconds: the right size,
+        the MOEA subsidy, payback, IRR and blackout backup hours.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary calc-link" href="calculator/" data-zh="立即免費試算 →">Run the free calculator →</a>
+        <a class="btn btn-ghost" href="sample-report.pdf" data-zh="下載範例報告 (PDF)">Sample report (PDF)</a>
+      </div>
+      <div class="privacy" data-zh="🔒 試算完全在您的瀏覽器中執行，不上傳任何資料、不需註冊。">
+        🔒 Runs entirely in your browser. Nothing is uploaded, no sign-up.
+      </div>
+    </div>
+    <div class="example">
+      <h3 data-zh="範例：3,000 kW 契約容量的園區工廠">Example: science-park factory, 3,000 kW contract</h3>
+      <div class="big" data-zh="建議 4 MWh / 2 MW 儲能">4 MWh / 2 MW battery</div>
+      <div class="example-grid">
+        <div class="metric"><div class="label" data-zh="回收年限">Payback</div><div class="value" data-zh="6 年">6 yrs</div></div>
+        <div class="metric"><div class="label" data-zh="專案報酬率">Project IRR</div><div class="value">15.9 %</div></div>
+        <div class="metric"><div class="label" data-zh="15 年淨現值">15-yr NPV</div><div class="value">NT$18.7M</div></div>
+        <div class="metric"><div class="label" data-zh="停電備援 (300 kW)">Backup @ 300 kW</div><div class="value" data-zh="12 小時">12 h</div></div>
+      </div>
+      <small data-zh="使用 114/10 台電高壓三段式電價與經濟部補助；不含輔助服務收益。">
+        Oct 2025 Taipower high-voltage TOU tariff and MOEA subsidy; ancillary-service revenue excluded.
+      </small>
+    </div>
+  </div>
+</header>
+
+<div class="strip">
+  <div class="wrap">
+    <div><div class="value">NT$9.39</div><div class="label" data-zh="夏月尖峰 每度 (16–22 時)">summer peak per kWh (16–22h)</div></div>
+    <div><div class="value">NT$2.53</div><div class="label" data-zh="夏月離峰 每度">summer off-peak per kWh</div></div>
+    <div><div class="value">NT$5M</div><div class="label" data-zh="每 MWh 補助（最高 50%）">MOEA subsidy per MWh (≤ 50 %)</div></div>
+    <div><div class="value">≈ 0</div><div class="label" data-zh="dReg 價格：已排除，數字保守">dReg prices: excluded, so numbers stay conservative</div></div>
+  </div>
+</div>
+
+<section id="how">
+  <div class="wrap">
+    <h2 data-zh="三步驟，拿到儲能決策數字">Three steps to a battery decision</h2>
+    <p class="sub" data-zh="不需要顧問、不需要等報價。先知道值不值得，再找系統商。">
+      No consultant, no waiting for quotes. Know whether it pays before you talk to an integrator.
+    </p>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h3 data-zh="輸入電費單數字">Enter your bill numbers</h3>
+        <p data-zh="契約容量、夏月尖峰度數、非夏月半尖峰度數。進階參數（電價、成本、效率）都可修改。">
+          Contract capacity, summer peak kWh and non-summer semi-peak kWh. Tariff, cost and efficiency are all editable.
+        </p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3 data-zh="自動找出最適容量">Get the right size</h3>
+        <p data-zh="在 0.5–10 MWh 間比較每種容量，限制功率不超過契約容量與尖峰負載，並判斷補助資格。">
+          Compares every size from 0.5 to 10 MWh, keeps battery power within your contract capacity and peak load, and checks subsidy eligibility.
+        </p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3 data-zh="列印報告給主管">Print the report</h3>
+        <p data-zh="投資、補助、每年節省、回收年限、IRR、NPV、15 年現金流與停電備援，一鍵存成 PDF。">
+          Investment, subsidy, annual savings, payback, IRR, NPV, a 15-year cash-flow chart and backup hours, saved to PDF in one click.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="numbers" class="light">
+  <div class="wrap">
+    <h2 data-zh="電價調漲讓工廠儲能開始划算">Tariff hikes made factory batteries pay</h2>
+    <p class="sub" data-zh="同一套 1 MW / 2 MWh 系統，15 年、折現率 6%、低基本電費節省情境：">
+      The same 1 MW / 2 MWh system over 15 years at a 6 % discount rate (conservative demand-charge case):
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th data-zh="電價">Tariff</th>
+          <th data-zh="補助">Subsidy</th>
+          <th data-zh="回收">Payback</th>
+          <th>IRR</th>
+          <th data-zh="NPV (百萬 NT$)">NPV (NT$ M)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td data-zh="2023 年電價">2023 tariff</td><td data-zh="無">No</td><td data-zh="無法回收">Never</td><td data-zh="負">negative</td><td>−20.1</td></tr>
+        <tr><td data-zh="2023 年電價">2023 tariff</td><td data-zh="有">Yes</td><td data-zh="10 年">10 yrs</td><td>4.3 %</td><td>−1.3</td></tr>
+        <tr><td data-zh="現行（114/10）">Current (Oct 2025)</td><td data-zh="無">No</td><td data-zh="9 年">9 yrs</td><td>5.6 %</td><td>−0.6</td></tr>
+        <tr class="highlight"><td data-zh="現行（114/10）">Current (Oct 2025)</td><td data-zh="有">Yes</td><td data-zh="6 年">6 yrs</td><td>15.9 %</td><td>+9.4</td></tr>
+        <tr><td data-zh="表後儲能電價（草案）">Storage TOU (proposed)</td><td data-zh="有">Yes</td><td data-zh="5 年">5 yrs</td><td>21.6 %</td><td>+16.7</td></tr>
+      </tbody>
+    </table>
+    <p class="note" data-zh="假設：建置成本每 MWh 1,250 萬、往返效率 88%、每年衰退 2%、6,000 次循環壽命、維運 1.5%/年。表後儲能電價為媒體報導之設計目標，尚待公告。">
+      Assumptions: NT$12.5 M/MWh build cost, 88 % round-trip efficiency, 2 %/yr fade, 6,000-cycle life, 1.5 %/yr O&amp;M.
+      Storage-TOU figures are reported design targets, not a published tariff.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 data-zh="為什麼是現在">Why now</h2>
+    <p class="sub" data-zh="台灣電網吃緊、AI 用電成長，工廠自己的電力韌性變成競爭力。">
+      Taiwan's grid is tight and AI demand is climbing. A factory's own power resilience is becoming a competitive edge.
+    </p>
+    <div class="why">
+      <div class="item"><b data-zh="462 萬 / 549 萬戶">4.62 M / 5.49 M</b><p data-zh="2021 年 5/13 與 2022 年 3/3 大停電影響戶數。">households hit by the 13 May 2021 and 3 March 2022 blackouts.</p></div>
+      <div class="item"><b>≈ 8.5 %</b><p data-zh="2025 年預估備轉容量率，夏季尖峰餘裕有限。">projected 2025 operating reserve margin: little room at the summer peak.</p></div>
+      <div class="item"><b>2.24 GW</b><p data-zh="預估 2028 年 AI 資料中心用電需求。">expected AI data-center demand by 2028.</p></div>
+      <div class="item"><b data-zh="NT$5,645 億">NT$564.5 B</b><p data-zh="強化電網韌性建設計畫，10 年推動分散式電網。">10-year grid-resilience plan pushing a more distributed grid.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="wrap">
+    <h2 data-zh="路線圖">Roadmap</h2>
+    <p class="sub" data-zh="從免費試算開始，最終目標是讓電池網路成為能量銀行：用自己儲存的電，支撐自己的價值。">
+      It starts with a free calculator. The long-term goal: battery networks that work like an energy bank, where stored power backs real value.
+    </p>
+    <div class="roadmap">
+      <div class="phase live">
+        <span class="tag" data-zh="已上線">Live</span>
+        <h3 data-zh="儲能效益試算">Storage calculator</h3>
+        <p data-zh="電費單 → 容量、補助、回收、IRR、備援。">Bill in, size, subsidy, payback, IRR and backup out.</p>
+      </div>
+      <div class="phase">
+        <span class="tag" data-zh="下一步">Next</span>
+        <h3 data-zh="15 分鐘需量分析">15-minute load analysis</h3>
+        <p data-zh="匯入 AMI 智慧電表資料，精準設計容量與契約容量。">Import AMI meter data for exact sizing and contract-capacity tuning.</p>
+      </div>
+      <div class="phase">
+        <span class="tag" data-zh="規劃中">Planned</span>
+        <h3 data-zh="AI 調度最佳化">AI dispatch optimizer</h3>
+        <p data-zh="依電價、負載與天氣，每天自動決定充放電。">Decides charge and discharge every day from tariffs, load and weather.</p>
+      </div>
+      <div class="phase">
+        <span class="tag" data-zh="研究中">Research</span>
+        <h3 data-zh="員工電動車充電">Employee EV charging</h3>
+        <p data-zh="讓同一套儲能也能在離峰時段為員工電動車充電。">Use the same storage to charge employee EVs off-peak.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="light">
+  <div class="wrap">
+    <h2 data-zh="常見問題">FAQ</h2>
+    <details>
+      <summary data-zh="試算準確嗎？">How accurate is it?</summary>
+      <p data-zh="這是初步估算：從每月尖峰／半尖峰用電推估可放電量。正式設計需要 15 分鐘需量資料、契約容量結構與系統商報價。計算邏輯已與 Python 模型逐項比對（見 GitHub 原始碼）。">
+        It is a first-pass estimate: dischargeable energy is inferred from monthly peak and semi-peak use. A final design needs
+        15-minute demand data, your contract-capacity structure and supplier quotes. The math is checked line-for-line against the
+        Python model in the repo.
+      </p>
+    </details>
+    <details>
+      <summary data-zh="為什麼不計入輔助服務收益？">Why is ancillary-service revenue excluded?</summary>
+      <p data-zh="台電 dReg / E-dReg 市場已飽和，2025 年底結清價格接近 0。不計入讓數字保守、可信。">
+        Taipower's dReg / E-dReg market is saturated, and clearing prices were near NT$0 by late 2025. Leaving it out keeps the numbers conservative.
+      </p>
+    </details>
+    <details>
+      <summary data-zh="我的資料會被上傳嗎？">Is my data uploaded?</summary>
+      <p data-zh="不會。整個試算是一個靜態網頁，在您的瀏覽器中執行，也可以下載後離線使用。">
+        No. The calculator is one static page that runs in your browser. You can also download it and use it offline.
+      </p>
+    </details>
+    <details>
+      <summary data-zh="補助條件是什麼？">What are the subsidy conditions?</summary>
+      <p data-zh="經濟部產業儲能設備補助：每 MWh 500 萬元、最高 50%、1–10 MWh、工廠位於工業區／科學園區／科技產業園區、國產電芯、非陸製通訊模組，並承諾 3 年夜尖峰移轉執行率 80%。以經濟部最新公告為準。">
+        MOEA industrial storage subsidy: NT$5 M per MWh, up to 50 %, 1–10 MWh, factories in industrial / science / tech parks,
+        domestic cells, non-PRC communication modules and a 3-year evening peak-shift commitment at 80 %. Check the latest MOEA notice.
+      </p>
+    </details>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 data-zh="資料來源">Sources</h2>
+    <ul class="sources">
+      <li><a href="https://www.taipower.com.tw/2289/2290/46940/46945/">Taipower tariff tables</a> · <a href="https://www.taipower.com.tw/2289/2323/2338/64586/normalPost">Oct 2025 tariff notice (114年10月電價調整公告)</a></li>
+      <li><a href="https://udn.com/news/story/7238/9047033">UDN 2025-10-02: MOEA behind-the-meter storage subsidy (NT$5B over 4 years)</a></li>
+      <li><a href="https://www.cna.com.tw/news/afe/202501040201.aspx">CNA 2025-01-04: proposed storage time-of-use tariff</a></li>
+      <li><a href="https://www.reccessary.com/zh-tw/insight/poxa-behind-the-meter-storage-opportunity">Reccessary / POXA 2025-11: behind-the-meter storage business models</a></li>
+      <li><a href="https://www.energy-storage.news/battery-storage-system-prices-continue-to-fall-sharply-bnef-and-ember-reports-find/">Energy-Storage.News 2025-12: BNEF battery storage system prices</a></li>
+      <li><a href="https://www.taipeitimes.com/News/biz/archives/2024/07/16/2003820852">Taipei Times 2024-07: Taiwan power demand outlook</a></li>
+    </ul>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2 data-zh="先算，再決定。">Run the numbers first.</h2>
+    <p class="sub" style="margin: 0 auto 28px;" data-zh="兩分鐘，知道貴廠的儲能值不值得。">Two minutes to know whether a battery pays at your factory.</p>
+    <a class="btn btn-primary calc-link" href="calculator/" data-zh="開始免費試算 →">Open the calculator →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div data-zh="© 2026 Juwen Lie · MIT 授權 · 僅供參考，不構成投資建議">© 2026 Juwen Lie · MIT licensed · for reference only, not investment advice</div>
+    <div>
+      <a href="https://github.com/juw12/watt-reserve">GitHub</a> ·
+      <a href="https://juw12.github.io/portfolio/" data-zh="更多作品">More by juw12</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+"use strict";
+
+const params = new URLSearchParams(location.search);
+let language = params.get("lang") || ((navigator.language || "").toLowerCase().startsWith("zh") ? "zh" : "en");
+
+function applyLanguage() {
+  document.documentElement.lang = language === "zh" ? "zh-Hant" : "en";
+  document.querySelectorAll("[data-zh]").forEach((element) => {
+    if (element.dataset.en === undefined) {
+      element.dataset.en = element.innerHTML;
+    }
+    element.innerHTML = language === "zh" ? element.dataset.zh : element.dataset.en;
+  });
+  document.getElementById("langToggle").textContent = language === "zh" ? "English" : "中文";
+  document.querySelectorAll(".calc-link").forEach((link) => {
+    link.href = `calculator/?lang=${language}`;
+  });
+  document.title = language === "zh"
+    ? "Watt Reserve｜台灣工廠表後儲能效益試算"
+    : "Watt Reserve | Factory battery storage calculator for Taiwan";
+}
+
+document.getElementById("langToggle").addEventListener("click", () => {
+  language = language === "zh" ? "en" : "zh";
+  applyLanguage();
+});
+
+applyLanguage();
+</script>
+</body>
+</html>
