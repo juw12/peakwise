@@ -9,6 +9,7 @@
 <meta property="og:description" content="Taipower bill in, factory battery business case out: size, subsidy, payback, IRR, backup.">
 <meta property="og:image" content="https://juw12.github.io/peakwise/media/banner.jpg">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<meta name="theme-color" content="#0b1117">
 <style>
   :root {
     --ink: #0f1720;
@@ -394,6 +395,25 @@
     color: var(--muted);
     font-size: 13px;
   }
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 14px;
+  }
+  .logo,
+  footer a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  @media (max-width: 600px) {
+    table {
+      font-size: 13px;
+    }
+    th,
+    td {
+      padding: 10px 8px;
+    }
+  }
   footer .wrap {
     display: flex;
     justify-content: space-between;
@@ -515,7 +535,7 @@
     <p class="sub" data-zh="同一套 1 MW / 2 MWh 系統，15 年、折現率 6%、低基本電費節省情境：">
       The same 1 MW / 2 MWh system over 15 years at a 6 % discount rate (conservative demand-charge case):
     </p>
-    <table>
+    <div class="table-wrap"><table>
       <thead>
         <tr>
           <th data-zh="電價">Tariff</th>
@@ -532,7 +552,7 @@
         <tr class="highlight"><td data-zh="現行（114/10）">Current (Oct 2025)</td><td data-zh="有">Yes</td><td data-zh="6 年">6 yrs</td><td>14.8 %</td><td>+8.2</td></tr>
         <tr><td data-zh="表後儲能電價（草案）">Storage TOU (proposed)</td><td data-zh="有">Yes</td><td data-zh="5 年">5 yrs</td><td>20.6 %</td><td>+15.6</td></tr>
       </tbody>
-    </table>
+    </table></div>
     <p class="note" data-zh="假設：建置成本每 MWh 1,250 萬、往返效率 88%、每年衰退 2%、6,000 次循環壽命、維運 1.5%/年。表後儲能電價為媒體報導之設計目標，尚待公告。">
       Assumptions: NT$12.5 M/MWh build cost, 88 % round-trip efficiency, 2 %/yr fade, 6,000-cycle life, 1.5 %/yr O&amp;M.
       Storage-TOU figures are reported design targets, not a published tariff.
