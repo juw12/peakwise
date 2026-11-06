@@ -8,7 +8,8 @@ Researched inputs (verify against the actual bill and supplier quotes):
   * Taipower 高壓三段式, effective 2025-10-01 (114年10月電價表):
       summer (5/16-10/15) peak 16-22 = 9.39, semi-peak 5.85, off-peak 2.53 NT$/kWh
       non-summer semi-peak 5.47, off-peak 2.32 (off-peak 00-06 and 11-14)
-      demand charge 經常契約 223.6, 半尖峰契約 166.9 NT$/kW-month (summer)
+      demand charge 經常契約 223.6 (summer) / 166.9 (non-summer), 半尖峰契約 166.9 NT$/kW-month;
+      summer billing season 5/16-10/15 = 5 months, non-summer = 7 months
   * 2023 tariff (for comparison): summer 5.80 / 3.63 / 1.58, non-summer 3.40 / 1.45
   * Proposed 表後儲能 storage TOU (design targets, CNA 2025-01): summer 10.2 / 6.0 / 2.61,
     non-summer peak (15-21) 9.9, off-peak 2.39
@@ -68,10 +69,21 @@ TARIFFS = {
     },
 }
 
-# Effective demand-charge saving per shaved kW-month:
-#   low  = shift from 經常契約 to 半尖峰契約 (223.6 - 166.9)
-#   high = factory's max demand occurs in the 16-22 peak (full 223.6)
-DEMAND_SAVING = {"low": 223.6 - 166.9, "high": 223.6}
+# Demand-charge saving per shaved kW per YEAR (Taipower Oct 2025, high-voltage 3-stage):
+#   經常契約 223.6 NT$/kW-month in the 5 summer months, 166.9 in the 7 non-summer months;
+#   半尖峰契約 166.9 all year.
+#   low  = shaved kW moves from 經常契約 to 半尖峰契約 (only saves in summer)
+#   high = factory's max demand occurs in the 16-22 peak, so 經常契約 itself drops
+SUMMER_MONTHS = 5
+NONSUMMER_MONTHS = 7
+REGULAR_SUMMER = 223.6
+REGULAR_NONSUMMER = 166.9
+SEMI_PEAK = 166.9
+DEMAND_SAVING = {
+    "low": SUMMER_MONTHS * (REGULAR_SUMMER - SEMI_PEAK)
+    + NONSUMMER_MONTHS * max(0.0, REGULAR_NONSUMMER - SEMI_PEAK),
+    "high": SUMMER_MONTHS * REGULAR_SUMMER + NONSUMMER_MONTHS * REGULAR_NONSUMMER,
+}
 
 
 def cycle_margin(sell_price, buy_price, system):
@@ -122,7 +134,7 @@ def project_cashflows(tariff_name, subsidy, demand_case, system=SYSTEM):
 
     demand_saving_year = 0.0
     if demand_case:
-        demand_saving_year = system["demand_shave_kw"] * DEMAND_SAVING[demand_case] * 12
+        demand_saving_year = system["demand_shave_kw"] * DEMAND_SAVING[demand_case]
 
     om = system["om_frac_per_year"] * gross_capex
     cashflows = [-net_capex]

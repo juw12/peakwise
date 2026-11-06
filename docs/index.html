@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Watt Reserve | Factory battery storage calculator for Taiwan</title>
+<title>Watt Reserve · Battery Check for Taiwan factories</title>
 <meta name="description" content="Free calculator for Taiwan factories: turn your Taipower bill into battery size, MOEA subsidy, payback, IRR and blackout backup in seconds. Runs in your browser.">
 <meta property="og:title" content="Watt Reserve: own your power">
 <meta property="og:description" content="Taipower bill in, factory battery business case out: size, subsidy, payback, IRR, backup.">
@@ -426,7 +426,7 @@
       <a class="hide-mobile" href="#roadmap" data-zh="路線圖">Roadmap</a>
       <a class="hide-mobile" href="#faq" data-zh="常見問題">FAQ</a>
       <button class="btn btn-ghost btn-small" id="langToggle" type="button">中文</button>
-      <a class="btn btn-primary btn-small calc-link" href="calculator/" data-zh="開始試算">Open calculator</a>
+      <a class="btn btn-primary btn-small calc-link" href="calculator/" data-zh="開始儲能健檢">Open Battery Check</a>
     </div>
   </div>
 </nav>
@@ -441,7 +441,7 @@
         the MOEA subsidy, payback, IRR and blackout backup hours.
       </p>
       <div class="cta-row">
-        <a class="btn btn-primary calc-link" href="calculator/" data-zh="立即免費試算 →">Run the free calculator →</a>
+        <a class="btn btn-primary calc-link" href="calculator/" data-zh="免費儲能健檢 →">Run the free Battery Check →</a>
         <a class="btn btn-ghost" href="sample-report.pdf" data-zh="下載範例報告 (PDF)">Sample report (PDF)</a>
       </div>
       <div class="privacy" data-zh="🔒 試算完全在您的瀏覽器中執行，不上傳任何資料、不需註冊。">
@@ -453,8 +453,8 @@
       <div class="big" data-zh="建議 4 MWh / 2 MW 儲能">4 MWh / 2 MW battery</div>
       <div class="example-grid">
         <div class="metric"><div class="label" data-zh="回收年限">Payback</div><div class="value" data-zh="6 年">6 yrs</div></div>
-        <div class="metric"><div class="label" data-zh="專案報酬率">Project IRR</div><div class="value">15.9 %</div></div>
-        <div class="metric"><div class="label" data-zh="15 年淨現值">15-yr NPV</div><div class="value">NT$18.7M</div></div>
+        <div class="metric"><div class="label" data-zh="專案報酬率">Project IRR</div><div class="value">14.8 %</div></div>
+        <div class="metric"><div class="label" data-zh="15 年淨現值">15-yr NPV</div><div class="value">NT$16.4M</div></div>
         <div class="metric"><div class="label" data-zh="停電備援 (300 kW)">Backup @ 300 kW</div><div class="value" data-zh="12 小時">12 h</div></div>
       </div>
       <small data-zh="使用 114/10 台電高壓三段式電價與經濟部補助；不含輔助服務收益。">
@@ -522,11 +522,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td data-zh="2023 年電價">2023 tariff</td><td data-zh="無">No</td><td data-zh="無法回收">Never</td><td data-zh="負">negative</td><td>−20.1</td></tr>
-        <tr><td data-zh="2023 年電價">2023 tariff</td><td data-zh="有">Yes</td><td data-zh="10 年">10 yrs</td><td>4.3 %</td><td>−1.3</td></tr>
-        <tr><td data-zh="現行（114/10）">Current (Oct 2025)</td><td data-zh="無">No</td><td data-zh="9 年">9 yrs</td><td>5.6 %</td><td>−0.6</td></tr>
-        <tr class="highlight"><td data-zh="現行（114/10）">Current (Oct 2025)</td><td data-zh="有">Yes</td><td data-zh="6 年">6 yrs</td><td>15.9 %</td><td>+9.4</td></tr>
-        <tr><td data-zh="表後儲能電價（草案）">Storage TOU (proposed)</td><td data-zh="有">Yes</td><td data-zh="5 年">5 yrs</td><td>21.6 %</td><td>+16.7</td></tr>
+        <tr><td data-zh="2023 年電價">2023 tariff</td><td data-zh="無">No</td><td data-zh="無法回收">Never</td><td data-zh="負">negative</td><td>−21.2</td></tr>
+        <tr><td data-zh="2023 年電價">2023 tariff</td><td data-zh="有">Yes</td><td data-zh="10 年">10 yrs</td><td>2.8 %</td><td>−2.5</td></tr>
+        <tr><td data-zh="現行（114/10）">Current (Oct 2025)</td><td data-zh="無">No</td><td data-zh="10 年">10 yrs</td><td>4.7 %</td><td>−1.8</td></tr>
+        <tr class="highlight"><td data-zh="現行（114/10）">Current (Oct 2025)</td><td data-zh="有">Yes</td><td data-zh="6 年">6 yrs</td><td>14.8 %</td><td>+8.2</td></tr>
+        <tr><td data-zh="表後儲能電價（草案）">Storage TOU (proposed)</td><td data-zh="有">Yes</td><td data-zh="5 年">5 yrs</td><td>20.6 %</td><td>+15.6</td></tr>
       </tbody>
     </table>
     <p class="note" data-zh="假設：建置成本每 MWh 1,250 萬、往返效率 88%、每年衰退 2%、6,000 次循環壽命、維運 1.5%/年。表後儲能電價為媒體報導之設計目標，尚待公告。">
@@ -633,7 +633,7 @@
   <div class="wrap">
     <h2 data-zh="先算，再決定。">Run the numbers first.</h2>
     <p class="sub" style="margin: 0 auto 28px;" data-zh="兩分鐘，知道貴廠的儲能值不值得。">Two minutes to know whether a battery pays at your factory.</p>
-    <a class="btn btn-primary calc-link" href="calculator/" data-zh="開始免費試算 →">Open the calculator →</a>
+    <a class="btn btn-primary calc-link" href="calculator/" data-zh="開始免費儲能健檢 →">Open Battery Check →</a>
   </div>
 </section>
 

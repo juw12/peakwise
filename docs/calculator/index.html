@@ -3,117 +3,268 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Watt Reserve | 工廠儲能效益試算 Factory Battery Calculator</title>
+<title>儲能健檢 Battery Check · Watt Reserve</title>
+<meta name="description" content="工廠裝儲能划不划算？免登入、免上傳，用台電電費單 60 秒算出回收年限、報酬率與合理報價。Is a factory battery worth it in Taiwan? 60-second neutral check.">
 <style>
   :root {
-    --ink: #1d2733;
+    --ink: #17212b;
     --muted: #5b6b7b;
     --accent: #0f7b5f;
-    --accent-soft: #e5f4ef;
-    --warn: #b4531a;
+    --accent-soft: #e6f4ef;
+    --good: #0f7b5f;
+    --good-soft: #e3f5ee;
+    --maybe: #a86207;
+    --maybe-soft: #fdf3e2;
+    --bad: #b42318;
+    --bad-soft: #fdecea;
     --card: #ffffff;
-    --bg: #f3f6f8;
+    --bg: #f2f5f7;
     --line: #dde4ea;
+    --radius: 12px;
   }
   * {
     box-sizing: border-box;
   }
   body {
     margin: 0;
-    font-family: "Noto Sans TC", "Microsoft JhengHei", "Segoe UI", Arial, sans-serif;
+    font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", "Segoe UI", Arial, sans-serif;
     color: var(--ink);
     background: var(--bg);
+    line-height: 1.45;
   }
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 28px;
-    background: var(--ink);
+  a {
+    color: inherit;
+  }
+  .top {
+    background: linear-gradient(135deg, #14202b 0%, #1d3240 100%);
     color: #fff;
+    padding: 18px 28px 16px;
   }
-  header h1 {
-    margin: 0;
-    font-size: 20px;
+  .top-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
   }
-  header .sub {
+  .brand {
     font-size: 13px;
-    opacity: 0.8;
+    color: #8fe3c4;
+    text-decoration: none;
+    letter-spacing: 0.02em;
   }
-  header button {
-    margin-left: 8px;
-    padding: 7px 14px;
-    border: 1px solid #fff;
-    border-radius: 6px;
+  .brand:hover {
+    text-decoration: underline;
+  }
+  .top h1 {
+    margin: 2px 0 2px;
+    font-size: 28px;
+    letter-spacing: 0.01em;
+  }
+  .top .sub {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.85;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
     background: transparent;
     color: #fff;
+    font: inherit;
+    font-size: 13px;
+    text-decoration: none;
     cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .btn.primary {
+    background: #22c08f;
+    border-color: #22c08f;
+    color: #08231a;
+    font-weight: 700;
+  }
+  .btn.primary:hover {
+    background: #3ad3a2;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .chips li {
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(143, 227, 196, 0.14);
+    color: #c9f3e2;
+    font-size: 12px;
+  }
+  .chips li::before {
+    content: "✓ ";
+    color: #8fe3c4;
   }
   main {
     display: grid;
-    grid-template-columns: minmax(320px, 420px) 1fr;
+    grid-template-columns: minmax(300px, 400px) minmax(0, 1fr);
     gap: 20px;
-    padding: 20px 28px 40px;
+    padding: 20px 28px 32px;
+    max-width: 1320px;
+    margin: 0 auto;
   }
   .card {
     background: var(--card);
     border: 1px solid var(--line);
-    border-radius: 10px;
+    border-radius: var(--radius);
     padding: 18px 20px;
+    min-width: 0;
+  }
+  .stack {
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+  }
+  @media (min-width: 901px) {
+    .left {
+      position: sticky;
+      top: 16px;
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+    }
   }
   h2 {
-    margin: 0 0 12px;
+    margin: 0 0 10px;
     font-size: 17px;
   }
   h3 {
-    margin: 18px 0 8px;
-    font-size: 14px;
+    margin: 0 0 8px;
+    font-size: 15px;
+  }
+  .lead {
+    margin: -4px 0 10px;
+    font-size: 12px;
     color: var(--muted);
   }
   label.field {
     display: grid;
-    grid-template-columns: 1fr 130px;
+    grid-template-columns: minmax(0, 1fr) 120px;
     align-items: center;
     gap: 8px;
-    margin: 7px 0;
+    margin: 8px 0;
     font-size: 13px;
   }
   label.check {
     display: flex;
     gap: 8px;
-    align-items: center;
-    margin: 8px 0;
+    align-items: flex-start;
+    margin: 9px 0;
     font-size: 13px;
+  }
+  label.check input {
+    margin-top: 3px;
   }
   input[type="number"] {
     width: 100%;
-    padding: 6px 8px;
+    padding: 7px 9px;
     border: 1px solid var(--line);
-    border-radius: 6px;
-    font-size: 13px;
+    border-radius: 7px;
+    font: inherit;
+    font-size: 14px;
     text-align: right;
+    background: #fbfcfd;
+  }
+  input[type="number"]:focus {
+    outline: 2px solid #9fdcc6;
+    border-color: var(--accent);
+  }
+  input.invalid {
+    border-color: var(--bad);
+    background: var(--bad-soft);
   }
   .hint {
+    display: block;
     font-size: 11px;
     color: var(--muted);
   }
   details {
-    margin-top: 12px;
+    margin-top: 10px;
+    border-top: 1px dashed var(--line);
+    padding-top: 8px;
   }
   summary {
     cursor: pointer;
     font-size: 13px;
     color: var(--accent);
   }
+  .verdict {
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    border: 1px solid;
+  }
+  .verdict.good {
+    background: var(--good-soft);
+    border-color: #a7dcc8;
+  }
+  .verdict.maybe {
+    background: var(--maybe-soft);
+    border-color: #f0cf93;
+  }
+  .verdict.bad {
+    background: var(--bad-soft);
+    border-color: #f2b8b2;
+  }
+  .verdict .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .verdict.good .tag {
+    background: var(--good);
+  }
+  .verdict.maybe .tag {
+    background: var(--maybe);
+  }
+  .verdict.bad .tag {
+    background: var(--bad);
+  }
+  .verdict h2 {
+    margin: 8px 0 6px;
+    font-size: 22px;
+  }
+  .verdict p {
+    margin: 4px 0;
+    font-size: 15px;
+  }
+  .verdict .why {
+    font-size: 13px;
+    color: var(--muted);
+  }
   .kpis {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
   }
   .kpi {
-    background: var(--accent-soft);
-    border-radius: 8px;
-    padding: 12px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
   }
   .kpi .label {
     font-size: 12px;
@@ -123,46 +274,243 @@
     font-size: 22px;
     font-weight: 700;
     color: var(--accent);
+    white-space: nowrap;
+  }
+  .kpi .value.bad {
+    color: var(--bad);
+  }
+  .kpi .value.maybe {
+    color: var(--maybe);
+  }
+  .kpi .note {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .tablewrap {
+    overflow-x: auto;
   }
   table {
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
-    margin-top: 8px;
   }
   th,
   td {
-    padding: 6px 8px;
+    padding: 7px 8px;
     border-bottom: 1px solid var(--line);
     text-align: right;
+    white-space: nowrap;
+  }
+  th {
+    color: var(--muted);
+    font-weight: 600;
   }
   th:first-child,
   td:first-child {
     text-align: left;
+    white-space: normal;
   }
   tr.best td {
     background: var(--accent-soft);
     font-weight: 700;
   }
-  .notice {
-    margin-top: 14px;
-    padding: 10px 12px;
-    border-left: 4px solid var(--warn);
-    background: #fdf3ec;
-    font-size: 12px;
-    color: #6b3a17;
+  .neg {
+    color: var(--bad);
+  }
+  .chartbox {
+    position: relative;
   }
   canvas {
+    display: block;
     width: 100%;
-    height: 260px;
+    height: 240px;
+  }
+  .quote-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+  .stat {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .stat b {
+    white-space: nowrap;
+  }
+  .pill {
     margin-top: 10px;
-    border: 1px solid var(--line);
+    padding: 9px 12px;
     border-radius: 8px;
+    font-size: 13px;
+  }
+  .pill.good {
+    background: var(--good-soft);
+    color: #0b5a45;
+  }
+  .pill.bad {
+    background: var(--bad-soft);
+    color: #8a1c12;
+  }
+  .pill.info {
+    background: #eef3f7;
+    color: var(--muted);
+  }
+  ol.steps {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 14px;
+  }
+  ol.steps li {
+    margin: 6px 0;
+  }
+  .notice {
+    padding: 12px 14px;
+    border-left: 4px solid var(--maybe);
+    background: #fdf6ee;
+    font-size: 12px;
+    color: #6b3a17;
+    border-radius: 0 8px 8px 0;
   }
   footer {
+    max-width: 1320px;
+    margin: 0 auto;
     padding: 0 28px 30px;
     font-size: 11px;
     color: var(--muted);
+  }
+  .left {
+    align-self: start;
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+  }
+  .howto ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .howto li {
+    margin: 5px 0;
+  }
+  .howto a {
+    color: var(--accent);
+  }
+  .presets {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .preset {
+    padding: 4px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #f7faf9;
+    color: var(--ink);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .preset:hover,
+  .preset.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .echo {
+    display: block;
+    font-size: 11px;
+    color: var(--accent);
+  }
+  .btn.line {
+    background: #06c755;
+    border-color: #06c755;
+    color: #fff;
+    font-weight: 700;
+  }
+  .btn.line:hover {
+    background: #19d466;
+  }
+  .reset {
+    float: right;
+    border: 0;
+    background: none;
+    color: var(--accent);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .sizenote {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .livebar {
+    display: none;
+  }
+  @media (max-width: 900px) {
+    .livebar {
+      position: fixed;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 12px;
+      color: #fff;
+      font: inherit;
+      font-size: 14px;
+      text-align: left;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+    .livebar.good {
+      background: var(--good);
+    }
+    .livebar.maybe {
+      background: var(--maybe);
+    }
+    .livebar.bad {
+      background: var(--bad);
+    }
+    .livebar b {
+      white-space: nowrap;
+    }
+    body {
+      padding-bottom: 70px;
+    }
+  }
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    padding: 9px 16px;
+    border-radius: 8px;
+    background: #17212b;
+    color: #fff;
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .toast.show {
+    opacity: 1;
   }
   #testout {
     white-space: pre-wrap;
@@ -173,43 +521,118 @@
   }
   @media (max-width: 900px) {
     main {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
+      padding: 14px 14px 28px;
+    }
+    .top {
+      padding: 16px 16px 14px;
+    }
+    footer {
+      padding: 0 16px 24px;
     }
     .kpis {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .quote-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (min-width: 901px) {
+    #shareButton {
+      display: none;
+    }
+  }
+  @media (max-width: 600px) {
+    #copySummaryButton,
+    #emailLink,
+    #printButton {
+      display: none;
+    }
+    .btn {
+      padding: 7px 11px;
+    }
+  }
+  @media (max-width: 420px) {
+    label.field {
+      grid-template-columns: minmax(0, 1fr) 104px;
+    }
+    .top h1 {
+      font-size: 24px;
+    }
+    .verdict h2 {
+      font-size: 19px;
+    }
+    .kpi .value {
+      font-size: 19px;
     }
   }
   @media print {
-    header button,
+    .actions,
+    .chips,
     #inputs details,
-    footer .noprint {
-      display: none;
+    .noprint,
+    .toast {
+      display: none !important;
     }
     body {
       background: #fff;
     }
+    .top {
+      background: #fff;
+      color: var(--ink);
+      padding: 0 0 8px;
+      border-bottom: 2px solid var(--ink);
+    }
+    .brand {
+      color: var(--accent);
+    }
     main {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
+      padding: 12px 0;
+    }
+    .left {
+      position: static;
+      max-height: none;
+    }
+    .livebar,
+    .howto {
+      display: none !important;
+    }
+    .card,
+    .verdict {
+      break-inside: avoid;
     }
   }
 </style>
 </head>
 <body>
-<header>
-  <div>
-    <a href="../" style="color:#9fe8cc;font-size:13px;text-decoration:none;" data-i18n="back"></a>
-    <h1 data-i18n="title"></h1>
-    <div class="sub" data-i18n="subtitle"></div>
+<header class="top">
+  <div class="top-row">
+    <div>
+      <a class="brand" href="../" data-i18n="brand"></a>
+      <h1 data-toolname data-i18n="toolName"></h1>
+      <p class="sub" data-i18n="subtitle"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" id="langButton" type="button"></button>
+      <button class="btn primary" id="copyLinkButton" type="button" data-i18n="copyLink"></button>
+      <button class="btn" id="copySummaryButton" type="button" data-i18n="copySummary"></button>
+      <a class="btn line" id="lineLink" href="#" target="_blank" rel="noopener" data-i18n="line"></a>
+      <button class="btn" id="shareButton" type="button" data-i18n="share" hidden></button>
+      <a class="btn" id="emailLink" href="mailto:" data-i18n="email"></a>
+      <button class="btn" id="printButton" type="button" data-i18n="print"></button>
+    </div>
   </div>
-  <div>
-    <button id="langButton" type="button">English</button>
-    <button id="printButton" type="button" data-i18n="print"></button>
-  </div>
+  <ul class="chips" id="chips"></ul>
 </header>
 
 <main>
+  <div class="left">
   <section class="card" id="inputs">
+    <button class="reset noprint" id="resetButton" type="button" data-i18n="reset"></button>
     <h2 data-i18n="inputsTitle"></h2>
+    <p class="lead" data-i18n="inputsLead"></p>
+    <div class="presets noprint" id="presets"></div>
     <div id="siteFields"></div>
     <div id="siteChecks"></div>
     <details>
@@ -221,27 +644,78 @@
       <div id="costFields"></div>
     </details>
   </section>
-
-  <section class="card" id="results">
-    <h2 data-i18n="resultsTitle"></h2>
-    <div class="kpis">
-      <div class="kpi"><div class="label" data-i18n="kpiSize"></div><div class="value" id="kpiSize">–</div></div>
-      <div class="kpi"><div class="label" data-i18n="kpiPayback"></div><div class="value" id="kpiPayback">–</div></div>
-      <div class="kpi"><div class="label" data-i18n="kpiIrr"></div><div class="value" id="kpiIrr">–</div></div>
-      <div class="kpi"><div class="label" data-i18n="kpiNpv"></div><div class="value" id="kpiNpv">–</div></div>
-    </div>
-    <table id="detailTable"></table>
-    <canvas id="cashChart" width="900" height="260"></canvas>
-    <h3 data-i18n="sizeTableTitle"></h3>
-    <table id="sizeTable"></table>
-    <div class="notice" id="notice"></div>
+  <section class="card howto">
+    <h3 data-i18n="howTitle"></h3>
+    <ul id="howList"></ul>
   </section>
+  </div>
+
+  <div class="stack" id="results">
+    <section class="verdict" id="verdict" aria-live="polite">
+      <span class="tag" id="verdictTag"></span>
+      <h2 id="verdictTitle"></h2>
+      <p id="verdictText"></p>
+      <p class="why" id="verdictWhy"></p>
+    </section>
+
+    <div class="kpis">
+      <div class="kpi"><div class="label" data-i18n="kpiSize"></div><div class="value" id="kpiSize">–</div><div class="note" id="kpiSizeNote"></div></div>
+      <div class="kpi"><div class="label" data-i18n="kpiPayback"></div><div class="value" id="kpiPayback">–</div><div class="note" id="kpiPaybackNote"></div></div>
+      <div class="kpi"><div class="label" data-i18n="kpiIrr"></div><div class="value" id="kpiIrr">–</div><div class="note" data-i18n="kpiIrrNote"></div></div>
+      <div class="kpi"><div class="label" data-i18n="kpiNpv"></div><div class="value" id="kpiNpv">–</div><div class="note" id="kpiNpvNote"></div></div>
+    </div>
+
+    <section class="card">
+      <h3 data-i18n="chartTitle"></h3>
+      <div class="chartbox"><canvas id="cashChart" role="img"></canvas></div>
+    </section>
+
+    <section class="card" id="quoteCard">
+      <h3 data-i18n="quoteTitle"></h3>
+      <p class="lead" data-i18n="quoteLead"></p>
+      <div class="quote-grid">
+        <div>
+          <div id="quoteFields"></div>
+          <div class="stat"><span data-i18n="maxFair"></span><b id="maxFair">–</b></div>
+          <div class="stat"><span data-i18n="price7"></span><b id="price7">–</b></div>
+          <div class="stat"><span data-i18n="refPrice"></span><b id="refPrice">–</b></div>
+        </div>
+        <div id="quoteResult"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3 data-i18n="sensTitle"></h3>
+      <p class="lead" data-i18n="sensLead"></p>
+      <div class="tablewrap"><table id="sensTable"></table></div>
+    </section>
+
+    <section class="card">
+      <h3 data-i18n="detailTitle"></h3>
+      <div class="tablewrap"><table id="detailTable"></table></div>
+    </section>
+
+    <section class="card">
+      <h3 data-i18n="sizeTableTitle"></h3>
+      <div class="tablewrap"><table id="sizeTable"></table></div>
+      <p class="sizenote" id="sizeNote"></p>
+    </section>
+
+    <section class="card">
+      <h3 data-i18n="nextTitle"></h3>
+      <ol class="steps" id="nextSteps"></ol>
+    </section>
+
+    <div class="notice" id="notice"></div>
+  </div>
 </main>
 
 <footer>
   <div data-i18n="sources"></div>
   <div class="noprint" data-i18n="disclaimer"></div>
 </footer>
+<button class="livebar" id="livebar" type="button" aria-label="results"></button>
+<div class="toast" id="toast" role="status"></div>
 <pre id="testout" hidden></pre>
 
 <script>
@@ -249,21 +723,99 @@
 
 const I18N = {
   zh: {
-    back: "← Watt Reserve 首頁",
-    title: "Watt Reserve｜工廠表後儲能效益試算",
-    subtitle: "輸入台電電費單資料，立即估算儲能容量、補助、回收年限與報酬率",
-    print: "列印 / 存成 PDF",
-    inputsTitle: "工廠資料（取自台電電費單）",
-    advancedTariff: "進階：電價參數（預設 114年10月 高壓三段式）",
+    brand: "Watt Reserve",
+    toolName: "儲能健檢",
+    subtitle: "工廠裝儲能划不划算？用台電電費單，60 秒算給你看。",
+    chips: ["免登入、免上傳", "不賣電池，立場中立", "不划算會直說", "可檢查廠商報價", "中文 / English"],
+    langButton: "English",
+    copyLink: "複製連結",
+    copySummary: "複製摘要",
+    email: "Email 寄出",
+    print: "列印 / PDF",
+    copied: "已複製，可貼到 LINE 或 Email",
+    copyFailed: "無法自動複製，請手動選取網址",
+    inputsTitle: "工廠資料",
+    reset: "重設",
+    line: "LINE 分享",
+    share: "分享",
+    presetsLabel: "範例：",
+    presets: { small: "小型廠 800 kW", medium: "中型廠 3,000 kW", large: "大型廠 10,000 kW" },
+    echoKwh: (v) => `= ${v} 度`,
+    echoKw: (v) => `= ${v} kW`,
+    rangeWorst: "±20%：最差可能無法回本",
+    howTitle: "怎麼算的",
+    howList: [
+      "工作日離峰充電、尖峰放電；每次價差要大於電池損耗才放電。",
+      "電池功率不超過契約容量與 16–22 時平均負載，自動選淨現值最高的容量。",
+      "基本電費依台電季節費率：夏月 5 個月 223.6、非夏月 7 個月 166.9 元/瓩。",
+      "效率 88%、放電深度 90%、每年衰退 2%、維運 1.5%，中期補充電池；全部可在「進階」修改。",
+      "開源：與經過測試的 Python 模型使用同一套公式。",
+    ],
+    sourceLink: "看原始碼",
+    sizeNoteSame: "每個容量回收年限都一樣，代表您的尖峰用電足以吃下這些電池；在不超過負載的前提下，越大淨賺越多。",
+    sizeNoteBest: "建議容量 = 淨現值最高、且功率不超過契約容量與尖峰平均負載的容量。",
+    livebar: (r) => `${r.tag}｜${r.payback} 回本・IRR ${r.irr}`,
+    livebarCta: "看結果 ↑",
+    inputsLead: "從台電電費單抄下這幾個數字即可，其他已帶入 114 年 10 月電價。",
+    advancedTariff: "進階：電價（預設 114年10月 高壓三段式）",
     advancedCost: "進階：成本與技術參數",
-    resultsTitle: "試算結果",
     kpiSize: "建議容量",
     kpiPayback: "回收年限",
     kpiIrr: "專案報酬率 IRR",
-    kpiNpv: "15年淨現值 NPV",
+    kpiIrrNote: "高於 10% 通常值得做",
+    kpiNpv: "15 年淨現值",
+    chartTitle: "累計現金流（自付投資何時回本）",
+    quoteTitle: "拿到報價了？檢查一下",
+    quoteLead: "系統商報價（每 kWh，含安裝）超過「最高合理價格」就不划算。我們不賣電池，這個數字不偏袒任何廠商。",
+    maxFair: "最高合理價格（淨現值 = 0）",
+    price7: "7 年回本的最高價格",
+    refPrice: "本試算採用的市場價",
+    quoteEmpty: "輸入報價，立即看到以該價格的回收年限與報酬率。",
+    quoteAt: (q) => `以報價 NT$ ${q}/kWh 計算`,
+    quoteGood: (pct) => `報價比最高合理價格低 ${pct}%，有獲利空間。`,
+    quoteBad: (pct) => `報價比最高合理價格高 ${pct}%，以此價格不划算，建議議價或多比幾家。`,
+    sensTitle: "如果情況變差呢？",
+    sensLead: "同一容量在不同情境下的結果，看清楚最壞情況。",
+    sensRows: {
+      base: "基準（目前輸入）",
+      costUp: "建置成本 +20%",
+      costDown: "建置成本 −20%",
+      savingsDown: "節省 −20%（電價差縮小或用電減少）",
+      noSubsidy: "沒有經濟部補助",
+    },
+    sensCols: ["情境", "回收", "IRR", "淨現值"],
+    detailTitle: "明細",
     sizeTableTitle: "不同容量比較",
+    nextTitle: "下一步",
+    nextSteps: [
+      "向台電申請工廠的 15 分鐘需量資料，精確決定容量必備。",
+      "請至少 3 家系統商報價，並用上方「檢查報價」比對。",
+      "簽約前向經濟部確認補助資格與當年度名額。",
+      "按「複製連結」把這份試算傳給老闆或財務，數字會完整保留。",
+    ],
     years: "年",
+    yearsShort: "年",
     never: "無法回收",
+    verdictTags: { good: "建議評估", maybe: "勉強可行", bad: "暫不建議" },
+    verdictTitles: {
+      good: "值得請系統商來現場評估",
+      maybe: "勉強可行：先比價再決定",
+      bad: "以目前條件，裝儲能不划算",
+    },
+    verdictText: (r) => {
+      if (r.kind === "bad") {
+        const pay = r.payback === null ? "15 年內無法回本" : `要 ${r.payback} 年才回本`;
+        return `${r.size} MWh 儲能${pay}，15 年淨現值為 ${r.npv}。`;
+      }
+      const range = r.rangeHi === null
+        ? `；最差情況可能無法回本`
+        : (r.rangeLo === r.rangeHi ? "" : `（成本或節省 ±20% 時 ${r.rangeLo}–${r.rangeHi} 年）`);
+      return `${r.size} MWh（${r.power} MW）儲能約 ${r.payback} 年回本${range}，自付 ${r.net}，15 年淨現值 ${r.npv}。`;
+    },
+    whyGood: (r) => `主要來源：夏月尖峰與離峰每度價差 NT$ ${r.spread}${r.subsidy ? `，加上經濟部補助 ${r.subsidy}` : ""}。`,
+    whyMaybe: () => "報酬率低於 10%，報價高低影響最大：請用下方「檢查報價」確認報價低於最高合理價格。",
+    whyNoSubsidy: () => "主要原因：不符合經濟部補助資格（園區廠商、國產電芯、1–10 MWh），自付成本較高。",
+    whyLowUse: () => "主要原因：尖峰時段用電太少或電價差太小，電池用不滿。若工廠夜間或尖峰負載會增加，可再試算。",
     rows: {
       power: "功率 / 容量",
       grossCapex: "建置成本",
@@ -278,67 +830,160 @@ const I18N = {
     },
     eligible: "符合（需經濟部審核）",
     notEligible: "不符合",
-    sizeCols: ["容量 MWh", "淨投資 (百萬)", "第一年節省 (百萬)", "回收 (年)", "IRR", "NPV (百萬)"],
+    sizeCols: ["容量 MWh", "自付淨投資", "第一年節省", "回收", "IRR", "淨現值"],
     hours: "小時",
+    summaryTitle: "【儲能健檢】試算摘要",
+    summaryLines: (r) => [
+      `判斷：${r.title}`,
+      `建議容量：${r.size} MWh / ${r.power} MW`,
+      `自付淨投資：${r.net}（含補助 ${r.subsidyText}）`,
+      `回收：${r.paybackText}${r.rangeText}`,
+      `IRR：${r.irr}｜15 年淨現值：${r.npv}`,
+      `最高合理報價：${r.maxFair}/kWh`,
+      `完整試算：${r.url}`,
+      "（Watt Reserve 儲能健檢，免登入、不賣電池）",
+    ],
     notice:
       "本試算為初步估算：以每月尖峰／半尖峰用電推估可放電量，實際容量須依 15 分鐘需量資料、契約容量結構與廠商報價確認。" +
+      "適用高壓三段式時間電價用戶；其他電價請於「進階」修改。" +
       "補助條件（園區廠商、國產電芯、非陸製通訊模組、3 年夜尖峰移轉執行率 80%）以經濟部最新公告為準。" +
       "已排除輔助服務收益（dReg/E-dReg 價格因市場飽和接近 0）。",
     sources:
-      "資料來源：台電 114年10月電價表（高壓三段式）；經濟部產業儲能設備補助（每 MWh 500 萬、≤50%、1–10 MWh）；" +
+      "資料來源：台電 114年10月電價表（高壓三段式：流動電費 夏月尖峰 9.39／半尖峰 5.85／離峰 2.53，非夏月半尖峰 5.47／離峰 2.32 元/度；" +
+      "基本電費 經常契約 夏月 223.6／非夏月 166.9、半尖峰契約 166.9 元/瓩·月）；經濟部產業儲能設備補助（每 MWh 500 萬、≤50%、1–10 MWh）；" +
       "建置成本約每 MWh 1,250 萬（聯合報 2025-10）。",
-    disclaimer: "© Watt Reserve。本工具僅供參考，不構成投資建議。",
+    disclaimer: "© 2026 Watt Reserve · 開源計算（MIT）· 本工具僅供參考，不構成投資建議。",
     fields: {
       contractKw: ["經常契約容量 (kW)", "電費單「經常契約」"],
       summerPeakKwh: ["夏月 尖峰 每月用電 (kWh)", "夏月帳單「尖峰」度數（16–22 時）"],
       nonsummerSemiKwh: ["非夏月 半尖峰 每月用電 (kWh)", "非夏月帳單「半尖峰」度數"],
-      criticalKw: ["停電時關鍵負載 (kW)", "需維持運轉的設備"],
-      fixedSizeKwh: ["指定容量 (kWh，0 = 自動建議)", ""],
+      criticalKw: ["停電時關鍵負載 (kW)", "停電時必須維持運轉的設備"],
+      fixedSizeKwh: ["指定容量 (kWh)", "0 = 自動找最划算的容量"],
       inPark: ["工廠位於工業區／科學園區／科技產業園區", ""],
       domesticCells: ["同意採用國產電芯（補助要求）", ""],
-      peakIsMax: ["全廠最高需量出現在 16–22 尖峰時段", "勾選 = 基本電費節省較大"],
+      peakIsMax: ["全廠最高需量出現在 16–22 尖峰時段", "勾選 = 可降低經常契約，基本電費省更多"],
       summerPeak: ["夏月 尖峰 (NT$/kWh)", ""],
       summerSemi: ["夏月 半尖峰 (NT$/kWh)", ""],
       summerOff: ["夏月 離峰 (NT$/kWh)", ""],
       nonsummerSemi: ["非夏月 半尖峰 (NT$/kWh)", ""],
       nonsummerOff: ["非夏月 離峰 (NT$/kWh)", ""],
-      demandRegular: ["經常契約基本電費 (NT$/kW·月)", ""],
-      demandSemi: ["半尖峰契約基本電費 (NT$/kW·月)", ""],
-      capexPerKwh: ["建置成本 (NT$/kWh)", ""],
+      demandRegularSummer: ["經常契約 夏月 (NT$/kW·月)", "5/16–10/15"],
+      demandRegularNonsummer: ["經常契約 非夏月 (NT$/kW·月)", ""],
+      demandSemi: ["半尖峰契約 (NT$/kW·月)", ""],
+      capexPerKwh: ["建置成本 (NT$/kWh)", "含安裝的市場價"],
       subsidyPerKwh: ["補助 (NT$/kWh)", ""],
       durationH: ["放電時數 (h)", "容量 ÷ 功率"],
-      rte: ["往返效率", ""],
-      usableFrac: ["可用放電深度", ""],
-      omFrac: ["每年維運 (% 建置成本)", ""],
-      fade: ["每年衰退", ""],
+      rte: ["往返效率", "0.5–1"],
+      usableFrac: ["可用放電深度", "0.5–1"],
+      omFrac: ["每年維運 (占建置成本)", "0.015 = 1.5%"],
+      fade: ["每年容量衰退", "0.02 = 2%"],
       cycleLife: ["循環壽命 (次)", ""],
       lifeYears: ["評估年限 (年)", ""],
-      discount: ["折現率", ""],
+      discount: ["折現率（資金成本）", "0.06 = 6%"],
       summerWorkdays: ["夏月工作天數 (5/16–10/15)", ""],
       nonsummerWorkdays: ["非夏月工作天數", ""],
+      quotePerKwh: ["廠商報價 (NT$/kWh)", "含安裝；0 = 不檢查"],
     },
   },
   en: {
-    back: "← Watt Reserve home",
-    title: "Watt Reserve | Factory Battery Storage Calculator",
-    subtitle: "Enter your Taipower bill data to estimate battery size, subsidy, payback and return",
-    print: "Print / Save PDF",
-    inputsTitle: "Factory data (from Taipower bill)",
+    brand: "Watt Reserve",
+    toolName: "Battery Check",
+    subtitle: "Is a battery worth it for your Taiwan factory? A 60-second answer from your Taipower bill.",
+    chips: ["No login, no upload", "Neutral — we don't sell batteries", "Tells you when it's not worth it", "Checks any quote", "中文 / English"],
+    langButton: "中文",
+    copyLink: "Copy link",
+    copySummary: "Copy summary",
+    email: "Email",
+    print: "Print / PDF",
+    copied: "Copied — paste it into LINE or email",
+    copyFailed: "Couldn't copy automatically; select the address bar instead",
+    inputsTitle: "Your factory",
+    reset: "Reset",
+    line: "Share on LINE",
+    share: "Share",
+    presetsLabel: "Examples:",
+    presets: { small: "Small 800 kW", medium: "Mid 3,000 kW", large: "Large 10,000 kW" },
+    echoKwh: (v) => `= ${v} kWh`,
+    echoKw: (v) => `= ${v} kW`,
+    rangeWorst: "±20%: may never pay back",
+    howTitle: "How it calculates",
+    howList: [
+      "Charges off-peak and discharges at peak on workdays, only when the price gap beats battery wear.",
+      "Battery power stays under your contract capacity and average 16–22 load; it picks the size with the highest NPV.",
+      "Demand charges use Taipower's seasonal rates: 223.6 for 5 summer months, 166.9 for 7 months (NT$/kW).",
+      "88% efficiency, 90% depth, 2%/yr fade, 1.5%/yr O&M and a mid-life top-up; all editable under Advanced.",
+      "Open source: the same formulas as the tested Python model.",
+    ],
+    sourceLink: "View source",
+    sizeNoteSame: "Every size has the same payback because your peak load can absorb all of them; within that limit, bigger earns more in total.",
+    sizeNoteBest: "Recommended size = highest NPV while battery power stays under your contract capacity and average peak load.",
+    livebar: (r) => `${r.tag} · ${r.payback} payback · IRR ${r.irr}`,
+    livebarCta: "See results ↑",
+    inputsLead: "Copy these numbers from your Taipower bill. The Oct 2025 tariff is already filled in.",
     advancedTariff: "Advanced: tariff (default Oct 2025 high-voltage 3-stage TOU)",
     advancedCost: "Advanced: cost & technical",
-    resultsTitle: "Results",
     kpiSize: "Recommended size",
     kpiPayback: "Payback",
     kpiIrr: "Project IRR",
-    kpiNpv: "15-yr NPV",
+    kpiIrrNote: "Above 10% is usually worth doing",
+    kpiNpv: "15-year NPV",
+    chartTitle: "Cumulative cash flow (when your own money comes back)",
+    quoteTitle: "Got a quote? Check it",
+    quoteLead: "If an integrator's price (per kWh, installed) is above the maximum fair price, the project doesn't pay. We don't sell batteries, so this number favours no one.",
+    maxFair: "Maximum fair price (NPV = 0)",
+    price7: "Highest price for a 7-year payback",
+    refPrice: "Market price used here",
+    quoteEmpty: "Enter a quote to see the payback and return at that price.",
+    quoteAt: (q) => `At your quote of NT$ ${q}/kWh`,
+    quoteGood: (pct) => `Your quote is ${pct}% below the maximum fair price — there is margin.`,
+    quoteBad: (pct) => `Your quote is ${pct}% above the maximum fair price — it doesn't pay at this price. Negotiate or get more quotes.`,
+    sensTitle: "What if things go worse?",
+    sensLead: "Same battery size under different conditions, so you can see the downside.",
+    sensRows: {
+      base: "Base (your inputs)",
+      costUp: "Build cost +20%",
+      costDown: "Build cost −20%",
+      savingsDown: "Savings −20% (smaller tariff spread or less load)",
+      noSubsidy: "No MOEA subsidy",
+    },
+    sensCols: ["Scenario", "Payback", "IRR", "NPV"],
+    detailTitle: "Details",
     sizeTableTitle: "Size comparison",
-    years: "yr",
-    never: "never",
+    nextTitle: "Next steps",
+    nextSteps: [
+      "Ask Taipower for your factory's 15-minute demand data — needed for exact sizing.",
+      "Get at least 3 integrator quotes and run each through the quote check above.",
+      "Confirm subsidy eligibility and this year's quota with MOEA before signing.",
+      'Press "Copy link" to send this exact calculation to your boss or finance team.',
+    ],
+    years: "years",
+    yearsShort: "yr",
+    never: "Never",
+    verdictTags: { good: "Worth a look", maybe: "Borderline", bad: "Not now" },
+    verdictTitles: {
+      good: "Worth inviting an integrator for a site survey",
+      maybe: "Borderline — compare quotes before deciding",
+      bad: "Not worth it under current conditions",
+    },
+    verdictText: (r) => {
+      if (r.kind === "bad") {
+        const pay = r.payback === null ? "does not pay back within 15 years" : `takes ${r.payback} years to pay back`;
+        return `A ${r.size} MWh battery ${pay}; the 15-year NPV is ${r.npv}.`;
+      }
+      const range = r.rangeHi === null
+        ? "; in the worst case it may never pay back"
+        : (r.rangeLo === r.rangeHi ? "" : ` (${r.rangeLo}–${r.rangeHi} years if cost or savings move ±20%)`);
+      return `A ${r.size} MWh / ${r.power} MW battery pays back in about ${r.payback} years${range}. You invest ${r.net}; the 15-year NPV is ${r.npv}.`;
+    },
+    whyGood: (r) => `Driven by the NT$ ${r.spread}/kWh summer peak vs off-peak spread${r.subsidy ? `, plus a ${r.subsidy} MOEA subsidy` : ""}.`,
+    whyMaybe: () => "Return is below 10%, so the price you pay decides it: use the quote check below to make sure quotes are under the maximum fair price.",
+    whyNoSubsidy: () => "Main reason: not eligible for the MOEA subsidy (park location, domestic cells, 1–10 MWh), so you pay full price.",
+    whyLowUse: () => "Main reason: too little peak-hour load or too small a price spread, so the battery sits idle. Re-run it if your peak load will grow.",
     rows: {
       power: "Power / energy",
       grossCapex: "Installed cost",
       subsidy: "MOEA subsidy",
-      netCapex: "Net investment",
+      netCapex: "Your net investment",
       energySaving: "Year-1 energy-charge saving",
       demandSaving: "Year-1 demand-charge saving",
       om: "Annual O&M",
@@ -348,89 +993,125 @@ const I18N = {
     },
     eligible: "Eligible (subject to MOEA review)",
     notEligible: "Not eligible",
-    sizeCols: ["Size MWh", "Net capex (M)", "Yr-1 saving (M)", "Payback (yr)", "IRR", "NPV (M)"],
+    sizeCols: ["Size MWh", "Net investment", "Year-1 saving", "Payback", "IRR", "NPV"],
     hours: "h",
+    summaryTitle: "Battery Check — summary",
+    summaryLines: (r) => [
+      `Verdict: ${r.title}`,
+      `Recommended size: ${r.size} MWh / ${r.power} MW`,
+      `Net investment: ${r.net} (after ${r.subsidyText} subsidy)`,
+      `Payback: ${r.paybackText}${r.rangeText}`,
+      `IRR: ${r.irr} | 15-year NPV: ${r.npv}`,
+      `Maximum fair quote: ${r.maxFair}/kWh`,
+      `Full calculation: ${r.url}`,
+      "(Watt Reserve Battery Check — no login, we don't sell batteries)",
+    ],
     notice:
-      "Preliminary estimate: dischargeable energy is inferred from monthly peak / semi-peak consumption. Final sizing needs 15-minute " +
-      "demand data, the contract-capacity structure and supplier quotes. Subsidy terms (park-located factory, domestic cells, " +
-      "non-PRC comms modules, 3-year evening peak-shift at 80 %) per latest MOEA notice. Ancillary-service revenue excluded " +
-      "(dReg/E-dReg prices ≈ 0 due to market saturation).",
+      "Preliminary estimate: dischargeable energy is inferred from monthly peak / semi-peak consumption. Final sizing needs 15-minute demand data, " +
+      "the contract-capacity structure and integrator quotes. Built for high-voltage 3-stage TOU customers; edit the tariff under Advanced for others. " +
+      "Subsidy conditions (park location, domestic cells, no PRC-made comms modules, 80% evening-peak shift over 3 years) follow the latest MOEA notice. " +
+      "Ancillary-service revenue (dReg/E-dReg) is excluded because clearing prices are near zero.",
     sources:
-      "Sources: Taipower tariff effective 2025-10-01 (high-voltage 3-stage TOU); MOEA industrial storage subsidy " +
-      "(NT$5 M/MWh, ≤50 %, 1–10 MWh); build cost ≈ NT$12.5 M/MWh (UDN, Oct 2025).",
-    disclaimer: "© Watt Reserve. For reference only; not investment advice.",
+      "Sources: Taipower Oct 2025 tariff (high-voltage 3-stage: energy NT$ 9.39 / 5.85 / 2.53 summer, 5.47 / 2.32 non-summer per kWh; " +
+      "demand NT$ 223.6 summer / 166.9 non-summer regular contract, 166.9 semi-peak contract per kW-month); MOEA storage subsidy " +
+      "(NT$ 5M/MWh, ≤50%, 1–10 MWh); build cost ≈ NT$ 12.5M/MWh (UDN, Oct 2025).",
+    disclaimer: "© 2026 Watt Reserve · open-source maths (MIT) · for information only, not investment advice.",
     fields: {
       contractKw: ["Regular contract capacity (kW)", "Bill: 經常契約"],
       summerPeakKwh: ["Summer peak kWh per month", "Summer bill 'peak' (16–22)"],
       nonsummerSemiKwh: ["Non-summer semi-peak kWh per month", "Non-summer bill 'semi-peak'"],
-      criticalKw: ["Critical load in a blackout (kW)", ""],
-      fixedSizeKwh: ["Fixed size (kWh, 0 = auto)", ""],
+      criticalKw: ["Critical load in a blackout (kW)", "Equipment that must keep running"],
+      fixedSizeKwh: ["Fixed size (kWh)", "0 = find the best size for me"],
       inPark: ["Factory is in an industrial / science / tech park", ""],
       domesticCells: ["Accept domestic battery cells (subsidy rule)", ""],
-      peakIsMax: ["Factory max demand occurs in 16–22 peak", "Checked = larger demand saving"],
+      peakIsMax: ["Factory max demand occurs in the 16–22 peak", "Ticked = contract can drop, bigger demand saving"],
       summerPeak: ["Summer peak (NT$/kWh)", ""],
       summerSemi: ["Summer semi-peak (NT$/kWh)", ""],
       summerOff: ["Summer off-peak (NT$/kWh)", ""],
       nonsummerSemi: ["Non-summer semi-peak (NT$/kWh)", ""],
       nonsummerOff: ["Non-summer off-peak (NT$/kWh)", ""],
-      demandRegular: ["Regular contract demand charge (NT$/kW·mo)", ""],
-      demandSemi: ["Semi-peak contract demand charge (NT$/kW·mo)", ""],
-      capexPerKwh: ["Installed cost (NT$/kWh)", ""],
+      demandRegularSummer: ["Regular contract, summer (NT$/kW·month)", "5/16–10/15"],
+      demandRegularNonsummer: ["Regular contract, non-summer (NT$/kW·month)", ""],
+      demandSemi: ["Semi-peak contract (NT$/kW·month)", ""],
+      capexPerKwh: ["Build cost (NT$/kWh)", "Installed market price"],
       subsidyPerKwh: ["Subsidy (NT$/kWh)", ""],
       durationH: ["Duration (h)", "energy ÷ power"],
-      rte: ["Round-trip efficiency", ""],
-      usableFrac: ["Usable depth of discharge", ""],
-      omFrac: ["Annual O&M (% of capex)", ""],
-      fade: ["Capacity fade per year", ""],
+      rte: ["Round-trip efficiency", "0.5–1"],
+      usableFrac: ["Usable depth of discharge", "0.5–1"],
+      omFrac: ["Annual O&M (share of capex)", "0.015 = 1.5%"],
+      fade: ["Capacity fade per year", "0.02 = 2%"],
       cycleLife: ["Cycle life", ""],
       lifeYears: ["Evaluation period (yr)", ""],
-      discount: ["Discount rate", ""],
+      discount: ["Discount rate (cost of money)", "0.06 = 6%"],
       summerWorkdays: ["Summer workdays (5/16–10/15)", ""],
       nonsummerWorkdays: ["Non-summer workdays", ""],
+      quotePerKwh: ["Quoted price (NT$/kWh)", "Installed; 0 = skip"],
     },
   },
 };
 
 const FIELDS = [
-  { id: "contractKw", group: "site", value: 3000, step: 100 },
-  { id: "summerPeakKwh", group: "site", value: 300000, step: 1000 },
-  { id: "nonsummerSemiKwh", group: "site", value: 600000, step: 1000 },
-  { id: "criticalKw", group: "site", value: 300, step: 50 },
-  { id: "fixedSizeKwh", group: "site", value: 0, step: 500 },
+  { id: "contractKw", group: "site", value: 3000, step: 100, min: 100, max: 200000 },
+  { id: "summerPeakKwh", group: "site", value: 300000, step: 1000, min: 0, max: 1e9 },
+  { id: "nonsummerSemiKwh", group: "site", value: 600000, step: 1000, min: 0, max: 1e9 },
+  { id: "criticalKw", group: "site", value: 300, step: 50, min: 0, max: 200000 },
+  { id: "fixedSizeKwh", group: "site", value: 0, step: 500, min: 0, max: 10000 },
   { id: "inPark", group: "check", value: true },
   { id: "domesticCells", group: "check", value: true },
   { id: "peakIsMax", group: "check", value: false },
-  { id: "summerPeak", group: "tariff", value: 9.39, step: 0.01 },
-  { id: "summerSemi", group: "tariff", value: 5.85, step: 0.01 },
-  { id: "summerOff", group: "tariff", value: 2.53, step: 0.01 },
-  { id: "nonsummerSemi", group: "tariff", value: 5.47, step: 0.01 },
-  { id: "nonsummerOff", group: "tariff", value: 2.32, step: 0.01 },
-  { id: "demandRegular", group: "tariff", value: 223.6, step: 0.1 },
-  { id: "demandSemi", group: "tariff", value: 166.9, step: 0.1 },
-  { id: "capexPerKwh", group: "cost", value: 12500, step: 100 },
-  { id: "subsidyPerKwh", group: "cost", value: 5000, step: 100 },
-  { id: "durationH", group: "cost", value: 2, step: 0.5 },
-  { id: "rte", group: "cost", value: 0.88, step: 0.01 },
-  { id: "usableFrac", group: "cost", value: 0.9, step: 0.01 },
-  { id: "omFrac", group: "cost", value: 0.015, step: 0.001 },
-  { id: "fade", group: "cost", value: 0.02, step: 0.005 },
-  { id: "cycleLife", group: "cost", value: 6000, step: 500 },
-  { id: "lifeYears", group: "cost", value: 15, step: 1 },
-  { id: "discount", group: "cost", value: 0.06, step: 0.005 },
-  { id: "summerWorkdays", group: "cost", value: 106, step: 1 },
-  { id: "nonsummerWorkdays", group: "cost", value: 142, step: 1 },
+  { id: "summerPeak", group: "tariff", value: 9.39, step: 0.01, min: 0, max: 50 },
+  { id: "summerSemi", group: "tariff", value: 5.85, step: 0.01, min: 0, max: 50 },
+  { id: "summerOff", group: "tariff", value: 2.53, step: 0.01, min: 0, max: 50 },
+  { id: "nonsummerSemi", group: "tariff", value: 5.47, step: 0.01, min: 0, max: 50 },
+  { id: "nonsummerOff", group: "tariff", value: 2.32, step: 0.01, min: 0, max: 50 },
+  { id: "demandRegularSummer", group: "tariff", value: 223.6, step: 0.1, min: 0, max: 2000 },
+  { id: "demandRegularNonsummer", group: "tariff", value: 166.9, step: 0.1, min: 0, max: 2000 },
+  { id: "demandSemi", group: "tariff", value: 166.9, step: 0.1, min: 0, max: 2000 },
+  { id: "capexPerKwh", group: "cost", value: 12500, step: 100, min: 1000, max: 60000 },
+  { id: "subsidyPerKwh", group: "cost", value: 5000, step: 100, min: 0, max: 30000 },
+  { id: "durationH", group: "cost", value: 2, step: 0.5, min: 0.5, max: 8 },
+  { id: "rte", group: "cost", value: 0.88, step: 0.01, min: 0.5, max: 1 },
+  { id: "usableFrac", group: "cost", value: 0.9, step: 0.01, min: 0.5, max: 1 },
+  { id: "omFrac", group: "cost", value: 0.015, step: 0.001, min: 0, max: 0.1 },
+  { id: "fade", group: "cost", value: 0.02, step: 0.005, min: 0, max: 0.2 },
+  { id: "cycleLife", group: "cost", value: 6000, step: 500, min: 500, max: 20000 },
+  { id: "lifeYears", group: "cost", value: 15, step: 1, min: 5, max: 30 },
+  { id: "discount", group: "cost", value: 0.06, step: 0.005, min: 0, max: 0.3 },
+  { id: "summerWorkdays", group: "cost", value: 106, step: 1, min: 1, max: 153 },
+  { id: "nonsummerWorkdays", group: "cost", value: 142, step: 1, min: 1, max: 212 },
+  { id: "quotePerKwh", group: "quote", value: 0, step: 100, min: 0, max: 60000 },
 ];
+
+const PRESETS = {
+  small: { contractKw: 800, summerPeakKwh: 80000, nonsummerSemiKwh: 160000, criticalKw: 100 },
+  medium: { contractKw: 3000, summerPeakKwh: 300000, nonsummerSemiKwh: 600000, criticalKw: 300 },
+  large: { contractKw: 10000, summerPeakKwh: 1000000, nonsummerSemiKwh: 2000000, criticalKw: 1000 },
+};
+const ECHO_FIELDS = { contractKw: "echoKw", summerPeakKwh: "echoKwh", nonsummerSemiKwh: "echoKwh" };
 
 const SUBSIDY_MIN_KWH = 1000;
 const SUBSIDY_MAX_KWH = 10000;
 const ABSORB_MARGIN = 0.9;          // keep 10 % margin: behind-the-meter energy cannot be exported
 const SUMMER_PEAK_HOURS = 6;        // 16:00-22:00
 const NONSUMMER_SEMI_HOURS = 15;    // 06-11 and 14-24
+const SUMMER_MONTHS = 5;            // summer billing season 5/16-10/15
+const NONSUMMER_MONTHS = 7;
 const AUGMENTATION_FRACTION = 0.25;
 const AUGMENTATION_PRICE_FACTOR = 0.6;
+const GOOD_IRR = 0.10;
+const GOOD_PAYBACK = 8;
+const TARGET_PAYBACK = 7;
 
-const languageParam = new URLSearchParams(location.search).get("lang");
-let language = languageParam === "en" ? "en" : "zh";
+const urlParams = new URLSearchParams(location.search);
+const browserZh = (navigator.language || "zh").toLowerCase().startsWith("zh");
+let language = urlParams.get("lang") === "en" ? "en" : urlParams.get("lang") === "zh" ? "zh" : (browserZh ? "zh" : "en");
+let lastChart = null;
+let lastSummary = "";
+let selfTestMode = location.hash === "#selftest";
+
+function fieldDefault(id) {
+  return FIELDS.find((field) => field.id === id).value;
+}
 
 function buildForm() {
   const containers = {
@@ -438,6 +1119,7 @@ function buildForm() {
     check: document.getElementById("siteChecks"),
     tariff: document.getElementById("tariffFields"),
     cost: document.getElementById("costFields"),
+    quote: document.getElementById("quoteFields"),
   };
   for (const field of FIELDS) {
     const wrapper = document.createElement("label");
@@ -445,23 +1127,63 @@ function buildForm() {
       wrapper.className = "check";
       wrapper.innerHTML =
         `<input type="checkbox" id="${field.id}" ${field.value ? "checked" : ""}>` +
-        `<span data-field="${field.id}"></span>`;
+        `<span><span data-field="${field.id}"></span><span class="hint" data-hint="${field.id}"></span></span>`;
     } else {
       wrapper.className = "field";
       wrapper.innerHTML =
-        `<span><span data-field="${field.id}"></span><br><span class="hint" data-hint="${field.id}"></span></span>` +
-        `<input type="number" id="${field.id}" value="${field.value}" step="${field.step}">`;
+        `<span><span data-field="${field.id}"></span><span class="hint" data-hint="${field.id}"></span>` +
+        (ECHO_FIELDS[field.id] ? `<span class="echo" id="echo-${field.id}"></span>` : "") + `</span>` +
+        `<input type="number" inputmode="decimal" id="${field.id}" value="${field.value}" step="${field.step}" min="${field.min}" max="${field.max}">`;
     }
     containers[field.group].appendChild(wrapper);
   }
-  document.querySelectorAll("#inputs input").forEach((element) => {
+  document.querySelectorAll("input").forEach((element) => {
     element.addEventListener("input", render);
   });
+}
+
+function restoreFromUrl() {
+  for (const field of FIELDS) {
+    if (!urlParams.has(field.id)) {
+      continue;
+    }
+    const element = document.getElementById(field.id);
+    const raw = urlParams.get(field.id);
+    if (field.group === "check") {
+      element.checked = raw === "1";
+    } else if (raw !== "" && Number.isFinite(parseFloat(raw))) {
+      element.value = raw;
+    }
+  }
+}
+
+function writeUrl() {
+  if (selfTestMode) {
+    return;
+  }
+  const params = new URLSearchParams();
+  params.set("lang", language);
+  for (const field of FIELDS) {
+    const element = document.getElementById(field.id);
+    if (field.group === "check") {
+      if (element.checked !== field.value) {
+        params.set(field.id, element.checked ? "1" : "0");
+      }
+    } else if (element.value !== "" && parseFloat(element.value) !== field.value) {
+      params.set(field.id, element.value);
+    }
+  }
+  try {
+    history.replaceState(null, "", `${location.pathname}?${params.toString()}${location.hash}`);
+  } catch (error) {
+    // Some browsers block history changes on file:// pages; the calculator still works.
+  }
 }
 
 function applyLanguage() {
   const strings = I18N[language];
   document.documentElement.lang = language === "zh" ? "zh-Hant" : "en";
+  document.title = `${strings.toolName} · Watt Reserve`;
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = strings[element.dataset.i18n];
   });
@@ -471,16 +1193,71 @@ function applyLanguage() {
   document.querySelectorAll("[data-hint]").forEach((element) => {
     element.textContent = strings.fields[element.dataset.hint][1];
   });
-  document.getElementById("langButton").textContent = language === "zh" ? "English" : "中文";
+  document.getElementById("langButton").textContent = strings.langButton;
+  document.getElementById("chips").innerHTML = strings.chips.map((chip) => `<li>${chip}</li>`).join("");
+  document.getElementById("nextSteps").innerHTML = strings.nextSteps.map((step) => `<li>${step}</li>`).join("");
   document.getElementById("notice").textContent = strings.notice;
+  document.getElementById("presets").innerHTML =
+    `<span>${strings.presetsLabel}</span>` +
+    Object.keys(PRESETS).map((key) => `<button class="preset" type="button" data-preset="${key}">${strings.presets[key]}</button>`).join("");
+  document.querySelectorAll("[data-preset]").forEach((button) => {
+    button.addEventListener("click", () => applyPreset(button.dataset.preset));
+  });
+  document.getElementById("howList").innerHTML =
+    strings.howList.map((item) => `<li>${item}</li>`).join("") +
+    `<li><a href="https://github.com/juw12/watt-reserve" target="_blank" rel="noopener">${strings.sourceLink} →</a></li>`;
+}
+
+function applyPreset(key) {
+  for (const [id, value] of Object.entries(PRESETS[key])) {
+    document.getElementById(id).value = value;
+  }
+  document.getElementById("fixedSizeKwh").value = 0;
+  render();
+}
+
+function updateEchoes(p) {
+  const strings = I18N[language];
+  for (const [id, kind] of Object.entries(ECHO_FIELDS)) {
+    const echo = document.getElementById(`echo-${id}`);
+    if (echo) {
+      echo.textContent = strings[kind](Math.round(p[id]).toLocaleString("en-US"));
+    }
+  }
+  document.querySelectorAll("[data-preset]").forEach((button) => {
+    const preset = PRESETS[button.dataset.preset];
+    const active = Object.entries(preset).every(([id, value]) => p[id] === value);
+    button.classList.toggle("active", active);
+  });
 }
 
 function readInputs() {
   const values = {};
   for (const field of FIELDS) {
     const element = document.getElementById(field.id);
-    values[field.id] = field.group === "check" ? element.checked : parseFloat(element.value) || 0;
+    if (field.group === "check") {
+      values[field.id] = element.checked;
+      continue;
+    }
+    let value = parseFloat(element.value);
+    let invalid = false;
+    if (!Number.isFinite(value)) {
+      value = field.value;
+      invalid = element.value !== "";
+      if (element.value === "") {
+        invalid = true;
+      }
+    } else if (value < field.min) {
+      value = field.min;
+      invalid = true;
+    } else if (value > field.max) {
+      value = field.max;
+      invalid = true;
+    }
+    element.classList.toggle("invalid", invalid);
+    values[field.id] = value;
   }
+  values.savingsFactor = 1;
   return values;
 }
 
@@ -489,6 +1266,15 @@ function cycleMargin(sellPrice, buyPrice, p) {
   const discharged = p.usableFrac;
   const charged = discharged / p.rte;
   return discharged * sellPrice - charged * buyPrice;
+}
+
+function demandRatePerKwYear(p) {
+  // Taipower bills the regular contract at the summer rate for 5 months and the non-summer rate for 7.
+  if (p.peakIsMax) {
+    return SUMMER_MONTHS * p.demandRegularSummer + NONSUMMER_MONTHS * p.demandRegularNonsummer;
+  }
+  return SUMMER_MONTHS * Math.max(0, p.demandRegularSummer - p.demandSemi) +
+    NONSUMMER_MONTHS * Math.max(0, p.demandRegularNonsummer - p.demandSemi);
 }
 
 function evaluateSize(sizeKwh, p) {
@@ -500,8 +1286,8 @@ function evaluateSize(sizeKwh, p) {
   const usableKwh = sizeKwh * p.usableFrac;
   const wearPerCycle = netCapex / sizeKwh / p.cycleLife;
 
-  const summerDaysPerMonth = p.summerWorkdays / 5;
-  const nonsummerDaysPerMonth = p.nonsummerWorkdays / 7;
+  const summerDaysPerMonth = p.summerWorkdays / SUMMER_MONTHS;
+  const nonsummerDaysPerMonth = p.nonsummerWorkdays / NONSUMMER_MONTHS;
   const summerPeakDaily = (p.summerPeakKwh / summerDaysPerMonth) * ABSORB_MARGIN;
   const nonsummerSemiDaily = (p.nonsummerSemiKwh / nonsummerDaysPerMonth) * ABSORB_MARGIN;
   const summerFirstUse = Math.min(usableKwh, summerPeakDaily);
@@ -522,11 +1308,11 @@ function evaluateSize(sizeKwh, p) {
       cyclesPerYear += fraction * option.days;
     }
   }
+  energySaving *= p.savingsFactor;
 
   const summerPeakAvgKw = (p.summerPeakKwh / summerDaysPerMonth) / SUMMER_PEAK_HOURS;
-  const shaveKw = Math.min(powerKw, sizeKwh / SUMMER_PEAK_HOURS, summerPeakAvgKw * ABSORB_MARGIN);
-  const demandRate = p.peakIsMax ? p.demandRegular : p.demandRegular - p.demandSemi;
-  const demandSaving = shaveKw * demandRate * 12;
+  const shaveKw = Math.max(0, Math.min(powerKw, sizeKwh / SUMMER_PEAK_HOURS, summerPeakAvgKw * ABSORB_MARGIN));
+  const demandSaving = shaveKw * demandRatePerKwYear(p) * p.savingsFactor;
 
   const om = p.omFrac * grossCapex;
   const flows = [-netCapex];
@@ -592,7 +1378,7 @@ function internalRate(flows) {
 
 function evaluateAll(p) {
   // Battery power must not exceed the contract capacity or the average 16-22 peak-hour load
-  const summerDaysPerMonth = p.summerWorkdays / 5;
+  const summerDaysPerMonth = p.summerWorkdays / SUMMER_MONTHS;
   const summerPeakAvgKw = (p.summerPeakKwh / summerDaysPerMonth) / SUMMER_PEAK_HOURS;
   const maxPowerKw = Math.min(p.contractKw, summerPeakAvgKw * ABSORB_MARGIN);
   const candidates = [];
@@ -610,36 +1396,193 @@ function evaluateAll(p) {
   return { best, candidates };
 }
 
-function millions(value) {
-  return (value / 1e6).toFixed(2);
+function highestPrice(sizeKwh, p, accept) {
+  // Largest build cost (NT$/kWh) for which accept(result) still holds; results are monotonic in price.
+  const low = 500;
+  const high = 60000;
+  const at = (price) => evaluateSize(sizeKwh, { ...p, capexPerKwh: price });
+  if (!accept(at(low))) {
+    return null;
+  }
+  if (accept(at(high))) {
+    return Infinity;
+  }
+  let lo = low;
+  let hi = high;
+  for (let iteration = 0; iteration < 40; iteration += 1) {
+    const mid = (lo + hi) / 2;
+    if (accept(at(mid))) {
+      lo = mid;
+    } else {
+      hi = mid;
+    }
+  }
+  return lo;
 }
 
-function ntd(value) {
+function sensitivity(sizeKwh, p) {
+  return {
+    base: evaluateSize(sizeKwh, p),
+    costUp: evaluateSize(sizeKwh, { ...p, capexPerKwh: p.capexPerKwh * 1.2 }),
+    costDown: evaluateSize(sizeKwh, { ...p, capexPerKwh: p.capexPerKwh * 0.8 }),
+    savingsDown: evaluateSize(sizeKwh, { ...p, savingsFactor: 0.8 }),
+    savingsUp: evaluateSize(sizeKwh, { ...p, savingsFactor: 1.2 }),
+    noSubsidy: evaluateSize(sizeKwh, { ...p, subsidyPerKwh: 0 }),
+  };
+}
+
+function classify(result) {
+  if (result.payback === null || result.npv <= 0) {
+    return "bad";
+  }
+  if (result.irr !== null && result.irr >= GOOD_IRR && result.payback <= GOOD_PAYBACK) {
+    return "good";
+  }
+  return "maybe";
+}
+
+function money(value) {
+  if (language === "zh") {
+    return `NT$ ${Math.round(value / 1e4).toLocaleString("en-US")} 萬`;
+  }
+  return `NT$ ${(value / 1e6).toFixed(1)} M`;
+}
+
+function fullNtd(value) {
   return "NT$ " + Math.round(value).toLocaleString("en-US");
+}
+
+function perKwh(value) {
+  if (value === null) {
+    return "–";
+  }
+  if (value === Infinity) {
+    return "> NT$ 60,000";
+  }
+  return "NT$ " + (Math.round(value / 100) * 100).toLocaleString("en-US");
+}
+
+function pct(value) {
+  return value === null ? "–" : `${(value * 100).toFixed(1)} %`;
+}
+
+function paybackText(result) {
+  const strings = I18N[language];
+  return result.payback === null ? strings.never : `${result.payback} ${strings.yearsShort}`;
+}
+
+function signedMoneyCell(value) {
+  return `<td class="${value < 0 ? "neg" : ""}">${money(value)}</td>`;
 }
 
 function render() {
   const p = readInputs();
   const strings = I18N[language];
   const { best, candidates } = evaluateAll(p);
+  const scenarios = sensitivity(best.sizeKwh, p);
+  updateEchoes(p);
+  const kind = classify(best);
 
-  document.getElementById("kpiSize").textContent =
-    `${(best.sizeKwh / 1000).toFixed(1)} MWh`;
-  document.getElementById("kpiPayback").textContent =
-    best.payback === null ? strings.never : `${best.payback} ${strings.years}`;
-  document.getElementById("kpiIrr").textContent =
-    best.irr === null ? "–" : `${(best.irr * 100).toFixed(1)} %`;
-  document.getElementById("kpiNpv").textContent = `${millions(best.npv)} M`;
+  const rangePaybacks = [scenarios.base, scenarios.costUp, scenarios.costDown, scenarios.savingsDown, scenarios.savingsUp]
+    .map((item) => item.payback);
+  const rangeHi = rangePaybacks.some((value) => value === null) ? null : Math.max(...rangePaybacks);
+  const rangeLo = Math.min(...rangePaybacks.filter((value) => value !== null));
 
+  const maxFair = highestPrice(best.sizeKwh, p, (result) => result.npv >= 0);
+  const price7 = highestPrice(best.sizeKwh, p, (result) => result.payback !== null && result.payback <= TARGET_PAYBACK);
+
+  const sizeText = (best.sizeKwh / 1000).toFixed(1);
+  const powerText = (best.powerKw / 1000).toFixed(2);
+  const verdictData = {
+    kind,
+    size: sizeText,
+    power: powerText,
+    payback: best.payback,
+    rangeLo,
+    rangeHi,
+    net: money(best.netCapex),
+    npv: money(best.npv),
+    spread: (p.summerPeak - p.summerOff).toFixed(2),
+    subsidy: best.subsidy > 0 ? money(best.subsidy) : "",
+  };
+
+  const verdict = document.getElementById("verdict");
+  verdict.className = `verdict ${kind}`;
+  document.getElementById("verdictTag").textContent = strings.verdictTags[kind];
+  document.getElementById("verdictTitle").textContent = strings.verdictTitles[kind];
+  document.getElementById("verdictText").textContent = strings.verdictText(verdictData);
+  let why;
+  if (kind === "good") {
+    why = strings.whyGood(verdictData);
+  } else if (kind === "maybe") {
+    why = strings.whyMaybe();
+  } else if (!best.eligible && scenarios.noSubsidy.npv <= 0 && p.subsidyPerKwh > 0 && (!p.inPark || !p.domesticCells || best.sizeKwh < SUBSIDY_MIN_KWH)) {
+    why = strings.whyNoSubsidy();
+  } else {
+    why = strings.whyLowUse();
+  }
+  document.getElementById("verdictWhy").textContent = why;
+
+  for (const id of ["kpiSize", "kpiPayback", "kpiIrr", "kpiNpv"]) {
+    document.getElementById(id).className = `value ${kind === "good" ? "" : kind}`;
+  }
+  document.getElementById("kpiSize").textContent = `${sizeText} MWh`;
+  document.getElementById("kpiSizeNote").textContent = `${powerText} MW · ${money(best.netCapex)}`;
+  document.getElementById("kpiPayback").textContent = paybackText(best);
+  document.getElementById("kpiPaybackNote").textContent =
+    rangeHi === null ? strings.rangeWorst : `±20%: ${rangeLo}–${rangeHi} ${strings.yearsShort}`;
+  document.getElementById("kpiIrr").textContent = pct(best.irr);
+  document.getElementById("kpiNpv").textContent = money(best.npv);
+  document.getElementById("kpiNpvNote").textContent = `@ ${(p.discount * 100).toFixed(1)} %`;
+
+  // Quote check
+  document.getElementById("maxFair").textContent = perKwh(maxFair);
+  document.getElementById("price7").textContent = perKwh(price7);
+  document.getElementById("refPrice").textContent = perKwh(p.capexPerKwh);
+  const quoteBox = document.getElementById("quoteResult");
+  if (p.quotePerKwh > 0) {
+    const atQuote = evaluateSize(best.sizeKwh, { ...p, capexPerKwh: p.quotePerKwh });
+    let pill;
+    if (maxFair === null) {
+      pill = `<div class="pill bad">${strings.quoteBad("100+")}</div>`;
+    } else if (maxFair === Infinity || p.quotePerKwh <= maxFair) {
+      const gap = maxFair === Infinity ? "50+" : Math.round((1 - p.quotePerKwh / maxFair) * 100);
+      pill = `<div class="pill good">${strings.quoteGood(gap)}</div>`;
+    } else {
+      const gap = Math.round((p.quotePerKwh / maxFair - 1) * 100);
+      pill = `<div class="pill bad">${strings.quoteBad(gap)}</div>`;
+    }
+    quoteBox.innerHTML =
+      `<h3>${strings.quoteAt(Math.round(p.quotePerKwh).toLocaleString("en-US"))}</h3>` +
+      `<div class="stat"><span>${strings.kpiPayback}</span><b>${paybackText(atQuote)}</b></div>` +
+      `<div class="stat"><span>${strings.kpiIrr}</span><b>${pct(atQuote.irr)}</b></div>` +
+      `<div class="stat"><span>${strings.kpiNpv}</span><b class="${atQuote.npv < 0 ? "neg" : ""}">${money(atQuote.npv)}</b></div>` +
+      pill;
+  } else {
+    quoteBox.innerHTML = `<div class="pill info">${strings.quoteEmpty}</div>`;
+  }
+
+  // Sensitivity
+  const sensOrder = ["base", "costUp", "costDown", "savingsDown", "noSubsidy"];
+  document.getElementById("sensTable").innerHTML =
+    `<tr>${strings.sensCols.map((col) => `<th>${col}</th>`).join("")}</tr>` +
+    sensOrder.map((key) => {
+      const item = scenarios[key];
+      const rowClass = key === "base" ? "best" : "";
+      return `<tr class="${rowClass}"><td>${strings.sensRows[key]}</td><td>${paybackText(item)}</td>` +
+        `<td>${pct(item.irr)}</td>${signedMoneyCell(item.npv)}</tr>`;
+    }).join("");
+
+  // Details
   const rows = strings.rows;
   const detailRows = [
-    [rows.power, `${(best.powerKw / 1000).toFixed(2)} MW / ${(best.sizeKwh / 1000).toFixed(1)} MWh`],
-    [rows.grossCapex, ntd(best.grossCapex)],
-    [rows.subsidy, ntd(best.subsidy)],
-    [rows.netCapex, ntd(best.netCapex)],
-    [rows.energySaving, ntd(best.energySaving)],
-    [rows.demandSaving, ntd(best.demandSaving)],
-    [rows.om, ntd(best.om)],
+    [rows.power, `${powerText} MW / ${sizeText} MWh`],
+    [rows.grossCapex, fullNtd(best.grossCapex)],
+    [rows.subsidy, fullNtd(best.subsidy)],
+    [rows.netCapex, fullNtd(best.netCapex)],
+    [rows.energySaving, fullNtd(best.energySaving)],
+    [rows.demandSaving, fullNtd(best.demandSaving)],
+    [rows.om, fullNtd(best.om)],
     [rows.cycles, best.cyclesPerYear.toFixed(0)],
     [rows.backup, best.backupHours === null ? "–" : `${best.backupHours.toFixed(1)} ${strings.hours}`],
     [rows.eligibility, best.eligible ? strings.eligible : strings.notEligible],
@@ -648,6 +1591,7 @@ function render() {
     .map(([label, value]) => `<tr><td>${label}</td><td>${value}</td></tr>`)
     .join("");
 
+  // Sizes
   const header = `<tr>${strings.sizeCols.map((col) => `<th>${col}</th>`).join("")}</tr>`;
   const body = candidates
     .filter((item) => item.sizeKwh % 1000 === 0 || item.sizeKwh === best.sizeKwh)
@@ -655,54 +1599,139 @@ function render() {
       const rowClass = item.sizeKwh === best.sizeKwh ? "best" : "";
       return (
         `<tr class="${rowClass}"><td>${(item.sizeKwh / 1000).toFixed(1)}</td>` +
-        `<td>${millions(item.netCapex)}</td>` +
-        `<td>${millions(item.energySaving + item.demandSaving)}</td>` +
-        `<td>${item.payback === null ? strings.never : item.payback}</td>` +
-        `<td>${item.irr === null ? "–" : (item.irr * 100).toFixed(1) + " %"}</td>` +
-        `<td>${millions(item.npv)}</td></tr>`
+        `<td>${money(item.netCapex)}</td>` +
+        `<td>${money(item.energySaving + item.demandSaving)}</td>` +
+        `<td>${paybackText(item)}</td>` +
+        `<td>${pct(item.irr)}</td>` +
+        signedMoneyCell(item.npv) + "</tr>"
       );
     })
     .join("");
   document.getElementById("sizeTable").innerHTML = header + body;
+  const paybacks = new Set(candidates.map((item) => item.payback));
+  document.getElementById("sizeNote").textContent =
+    candidates.length > 1 && paybacks.size === 1 && best.payback !== null ? strings.sizeNoteSame : strings.sizeNoteBest;
 
-  drawChart(best.cumulative);
-  return { best, candidates };
+  const livebar = document.getElementById("livebar");
+  livebar.className = `livebar ${kind}`;
+  livebar.innerHTML =
+    `<span>${strings.livebar({ tag: strings.verdictTags[kind], payback: paybackText(best), irr: pct(best.irr) })}</span>` +
+    `<b>${strings.livebarCta}</b>`;
+
+  lastChart = { cumulative: best.cumulative, payback: best.payback };
+  drawChart();
+  writeUrl();
+
+  const rangeText = rangeHi === null || rangeLo === rangeHi ? "" : ` (±20%: ${rangeLo}–${rangeHi} ${strings.yearsShort})`;
+  const summaryData = {
+    title: strings.verdictTitles[kind],
+    size: sizeText,
+    power: powerText,
+    net: money(best.netCapex),
+    subsidyText: money(best.subsidy),
+    paybackText: paybackText(best),
+    rangeText,
+    irr: pct(best.irr),
+    npv: money(best.npv),
+    maxFair: perKwh(maxFair),
+    url: location.href,
+  };
+  lastSummary = [strings.summaryTitle, ...strings.summaryLines(summaryData)].join("\n");
+  document.getElementById("lineLink").href =
+    `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`;
+  document.getElementById("emailLink").href =
+    `mailto:?subject=${encodeURIComponent(strings.summaryTitle)}&body=${encodeURIComponent(lastSummary)}`;
+  return { best, candidates, scenarios, maxFair, price7, kind };
 }
 
-function drawChart(cumulative) {
+function niceStep(span, targetTicks) {
+  const raw = span / targetTicks;
+  const magnitude = Math.pow(10, Math.floor(Math.log10(raw)));
+  const residual = raw / magnitude;
+  const nice = residual >= 5 ? 10 : residual >= 2 ? 5 : residual >= 1 ? 2 : 1;
+  return nice * magnitude;
+}
+
+function drawChart() {
+  if (!lastChart) {
+    return;
+  }
   const canvas = document.getElementById("cashChart");
+  const ratio = window.devicePixelRatio || 1;
+  const cssWidth = Math.max(260, canvas.clientWidth || 600);
+  const cssHeight = 240;
+  canvas.width = Math.round(cssWidth * ratio);
+  canvas.height = Math.round(cssHeight * ratio);
   const context = canvas.getContext("2d");
-  const width = canvas.width;
-  const height = canvas.height;
-  const pad = 46;
-  context.clearRect(0, 0, width, height);
+  context.setTransform(ratio, 0, 0, ratio, 0, 0);
+  context.clearRect(0, 0, cssWidth, cssHeight);
 
-  const values = cumulative.map((value) => value / 1e6);
-  const maxValue = Math.max(...values, 0);
-  const minValue = Math.min(...values, 0);
+  const values = lastChart.cumulative.map((value) => value / 1e6);
+  const unit = language === "zh" ? "百萬" : "M";
+  const padLeft = 48;
+  const padRight = 14;
+  const padTop = 14;
+  const padBottom = 30;
+  let maxValue = Math.max(...values, 0);
+  let minValue = Math.min(...values, 0);
+  if (maxValue === minValue) {
+    maxValue += 1;
+  }
+  const step = niceStep(maxValue - minValue, 5);
+  maxValue = Math.ceil(maxValue / step) * step;
+  minValue = Math.floor(minValue / step) * step;
   const span = maxValue - minValue || 1;
-  const x = (index) => pad + (index / (values.length - 1)) * (width - 2 * pad);
-  const y = (value) => height - pad - ((value - minValue) / span) * (height - 2 * pad);
+  const plotWidth = cssWidth - padLeft - padRight;
+  const plotHeight = cssHeight - padTop - padBottom;
+  const x = (index) => padLeft + (index / (values.length - 1)) * plotWidth;
+  const y = (value) => padTop + ((maxValue - value) / span) * plotHeight;
 
-  context.strokeStyle = "#999";
-  context.beginPath();
-  context.moveTo(pad, y(0));
-  context.lineTo(width - pad, y(0));
-  context.stroke();
+  context.font = "11px 'Segoe UI', 'Microsoft JhengHei', sans-serif";
+  context.textBaseline = "middle";
+  for (let tick = minValue; tick <= maxValue + 1e-9; tick += step) {
+    context.strokeStyle = Math.abs(tick) < 1e-9 ? "#8a97a3" : "#e6ebef";
+    context.lineWidth = 1;
+    context.beginPath();
+    context.moveTo(padLeft, y(tick));
+    context.lineTo(cssWidth - padRight, y(tick));
+    context.stroke();
+    context.fillStyle = "#5b6b7b";
+    context.textAlign = "right";
+    context.fillText(`${Math.round(tick)}`, padLeft - 6, y(tick));
+  }
+  context.save();
+  context.translate(11, padTop + plotHeight / 2);
+  context.rotate(-Math.PI / 2);
+  context.textAlign = "center";
+  context.fillText(`NT$ ${unit}`, 0, 0);
+  context.restore();
 
-  context.fillStyle = "#5b6b7b";
-  context.font = "12px sans-serif";
-  context.fillText(language === "zh" ? "累計現金流 (百萬 NT$)" : "Cumulative cash flow (NT$ M)", pad, 18);
+  const labelEvery = plotWidth > 480 ? 1 : 3;
+  context.textAlign = "center";
+  context.textBaseline = "top";
   values.forEach((value, index) => {
-    if (index % 3 === 0) {
-      context.fillText(String(index), x(index) - 4, height - pad + 16);
+    if (index % labelEvery === 0 || index === values.length - 1) {
+      context.fillText(String(index), x(index), cssHeight - padBottom + 8);
     }
   });
-  context.fillText(maxValue.toFixed(0), 6, y(maxValue) + 4);
-  context.fillText(minValue.toFixed(0), 6, y(minValue) + 4);
+
+  // shaded areas
+  const zeroY = y(0);
+  context.beginPath();
+  context.moveTo(x(0), zeroY);
+  values.forEach((value, index) => context.lineTo(x(index), y(value)));
+  context.lineTo(x(values.length - 1), zeroY);
+  context.closePath();
+  context.save();
+  context.clip();
+  context.fillStyle = "rgba(34, 192, 143, 0.16)";
+  context.fillRect(padLeft, padTop, plotWidth, zeroY - padTop);
+  context.fillStyle = "rgba(180, 35, 24, 0.10)";
+  context.fillRect(padLeft, zeroY, plotWidth, padTop + plotHeight - zeroY);
+  context.restore();
 
   context.strokeStyle = "#0f7b5f";
-  context.lineWidth = 3;
+  context.lineWidth = 2.5;
   context.beginPath();
   values.forEach((value, index) => {
     if (index === 0) {
@@ -712,6 +1741,64 @@ function drawChart(cumulative) {
     }
   });
   context.stroke();
+
+  if (lastChart.payback !== null) {
+    const px = x(lastChart.payback);
+    context.setLineDash([4, 4]);
+    context.strokeStyle = "#0f7b5f";
+    context.lineWidth = 1;
+    context.beginPath();
+    context.moveTo(px, padTop);
+    context.lineTo(px, padTop + plotHeight);
+    context.stroke();
+    context.setLineDash([]);
+    const label = language === "zh" ? `第 ${lastChart.payback} 年回本` : `Payback, year ${lastChart.payback}`;
+    context.font = "bold 12px 'Segoe UI', 'Microsoft JhengHei', sans-serif";
+    context.textBaseline = "top";
+    context.textAlign = px > cssWidth - 120 ? "right" : "left";
+    context.fillStyle = "#0f7b5f";
+    context.fillText(label, px + (context.textAlign === "left" ? 6 : -6), padTop + 2);
+  }
+  const caption = language === "zh" ? "年" : "year";
+  context.font = "11px 'Segoe UI', 'Microsoft JhengHei', sans-serif";
+  context.fillStyle = "#5b6b7b";
+  context.textAlign = "right";
+  context.textBaseline = "top";
+  context.fillText(caption, cssWidth - padRight, cssHeight - 12);
+  canvas.setAttribute("aria-label", I18N[language].chartTitle);
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove("show"), 2200);
+}
+
+function copyText(text) {
+  const strings = I18N[language];
+  const fallback = () => {
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.style.position = "fixed";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    let ok = false;
+    try {
+      ok = document.execCommand("copy");
+    } catch (error) {
+      ok = false;
+    }
+    area.remove();
+    showToast(ok ? strings.copied : strings.copyFailed);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => showToast(strings.copied), fallback);
+  } else {
+    fallback();
+  }
 }
 
 function selfTest() {
@@ -729,18 +1816,20 @@ function selfTest() {
   document.getElementById("domesticCells").checked = true;
   document.getElementById("peakIsMax").checked = false;
   const { best } = render();
+  const high = evaluateSize(2000, { ...readInputs(), peakIsMax: true });
   const output = document.getElementById("testout");
   output.hidden = false;
   output.textContent = JSON.stringify({
     selftest: true,
     netCapexM: +(best.netCapex / 1e6).toFixed(3),
     energySavingM: +(best.energySaving / 1e6).toFixed(3),
-    demandSavingM: +(best.demandSaving / 1e6).toFixed(3),
+    demandSavingM: +(best.demandSaving / 1e6).toFixed(4),
+    demandSavingHighM: +(high.demandSaving / 1e6).toFixed(4),
     cycles: +best.cyclesPerYear.toFixed(1),
     payback: best.payback,
     irrPct: +(best.irr * 100).toFixed(2),
     npvM: +(best.npv / 1e6).toFixed(2),
-    expected: { netCapexM: 15, energySavingM: 3.21, cycles: 496, payback: 6, irrPct: 15.94, npvM: 9.36 },
+    expected: { netCapexM: 15, energySavingM: 3.21, cycles: 496, payback: 6, irrPct: 14.84, npvM: 8.22 },
   });
 }
 
@@ -750,10 +1839,35 @@ document.getElementById("langButton").addEventListener("click", () => {
   render();
 });
 document.getElementById("printButton").addEventListener("click", () => window.print());
+document.getElementById("copyLinkButton").addEventListener("click", () => copyText(location.href));
+document.getElementById("copySummaryButton").addEventListener("click", () => copyText(lastSummary));
+if (navigator.share) {
+  const shareButton = document.getElementById("shareButton");
+  shareButton.hidden = false;
+  shareButton.addEventListener("click", () => {
+    navigator.share({ title: I18N[language].summaryTitle, text: lastSummary }).catch(() => {});
+  });
+}
+window.addEventListener("resize", drawChart);
+document.getElementById("livebar").addEventListener("click", () => {
+  document.getElementById("verdict").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+document.getElementById("resetButton").addEventListener("click", () => {
+  for (const field of FIELDS) {
+    const element = document.getElementById(field.id);
+    if (field.group === "check") {
+      element.checked = field.value;
+    } else {
+      element.value = field.value;
+    }
+  }
+  render();
+});
 
 buildForm();
+restoreFromUrl();
 applyLanguage();
-if (location.hash === "#selftest") {
+if (selfTestMode) {
   selfTest();
 } else {
   render();

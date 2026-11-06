@@ -1,4 +1,4 @@
-﻿<!-- HERO:START -->
+<!-- HERO:START -->
 <p align="center">
   <a href="https://juw12.github.io/watt-reserve/"><img src="docs/media/banner.jpg" alt="Watt Reserve: Own your power." width="100%"></a>
 </p>
@@ -9,9 +9,9 @@
 </p>
 
 <p align="center">
-  <a href="https://juw12.github.io/watt-reserve/"><b>Try it live</b></a> Â·
-  <a href="#see-it-in-action">See it in action</a> Â·
-  <a href="#highlights">Highlights</a> Â·
+  <a href="https://juw12.github.io/watt-reserve/"><b>Try it live</b></a> ·
+  <a href="#see-it-in-action">See it in action</a> ·
+  <a href="#highlights">Highlights</a> ·
   <a href="https://github.com/juw12">More by juw12</a>
 </p>
 
@@ -20,7 +20,7 @@
   <a href="https://juw12.github.io/watt-reserve/"><img src="https://img.shields.io/badge/demo-live-2ea44f" alt="Live demo"></a>
   <img src="https://img.shields.io/badge/Web-24292f" alt="Web">
   <img src="https://img.shields.io/badge/Python_model-24292f" alt="Python model">
-  <img src="https://img.shields.io/badge/ä¸­æ–‡_%2F_EN-24292f" alt="Chinese and English">
+  <img src="https://img.shields.io/badge/中文_%2F_EN-24292f" alt="Chinese and English">
   <img src="https://img.shields.io/badge/license-MIT-f59e0b" alt="MIT license">
 </p>
 
@@ -36,8 +36,8 @@
       Taipower's October 2025 three-stage high-voltage tariff, MOEA storage subsidy and current BESS prices.
     </td>
     <td width="33%" valign="top">
-      <b>A report you can forward</b><br>
-      Payback, IRR, NPV and a recommended size, printable to PDF for the boss or the bank.
+      <b>Check any quote</b><br>
+      Shows the maximum fair price per kWh, so you know if an integrator's offer pays. We don't sell batteries.
     </td>
   </tr>
 </table>
@@ -62,9 +62,11 @@ Most factory owners never run the numbers because a consultant quote takes weeks
 your contract capacity, peak load and monthly bill, and tells you in a minute whether a battery is
 worth a site visit.
 
+Unlike the calculators run by battery sellers, **Battery Check** needs no login and no meter-data upload, says plainly when a battery is *not* worth it, shows the downside (cost +20 %, savings −20 %, no subsidy), and gives a shareable link you can send to your boss.
+
 ## Use the app
 
-1. Open **[juw12.github.io/watt-reserve](https://juw12.github.io/watt-reserve/)** (ä¸­æ–‡ or English, auto-detected; switch any time).
+1. Open **[juw12.github.io/watt-reserve](https://juw12.github.io/watt-reserve/)** (中文 or English, auto-detected; switch any time).
 2. Click **Open the calculator** and enter your contract capacity, peak load, monthly kWh and working days.
 3. Read the recommended size, payback, IRR and 15-year NPV, then **Print / save PDF**.
 
@@ -76,18 +78,18 @@ A sample Chinese report is in [`docs/sample-report.pdf`](docs/sample-report.pdf)
   rest of the year uses the half-peak spread. A cycle only runs if its margin beats battery wear.
 - **Sizing:** inverter power is capped at the smaller of contract capacity and peak load, and storage is sized for 2 hours.
 - **Losses:** 88% round-trip efficiency, 90% usable depth, 2%/yr fade and 1.5%/yr O&M.
-- **Money:** NT$12.5M/MWh installed, MOEA subsidy of NT$5M/MWh (â‰¤50%, 1â€“10 MWh), 15-year life and a 6% discount rate.
+- **Money:** NT$12.5M/MWh installed, MOEA subsidy of NT$5M/MWh (≤50%, 1–10 MWh), 15-year life and a 6% discount rate.
 - **Excluded on purpose:** Taipower dReg ancillary-service revenue, because clearing prices are near zero after the market filled up.
 
 Reference case: a 2 MWh / 1 MW system from [`model/taiwan_pilot.py`](model/taiwan_pilot.py), with net capex of NT$25M, or NT$15M after the subsidy:
 
 | Tariff | Subsidy | Payback | IRR | NPV (NT$M) |
 |---|---|---|---|---|
-| 2023 tariff | no | never | â€” | âˆ’20.1 |
-| 2023 tariff | yes | 10 yr | 4.3% | âˆ’1.3 |
-| **Current (Oct 2025)** | no | 9 yr | 5.5% | âˆ’0.6 |
-| **Current (Oct 2025)** | **yes** | **6 yr** | **15.9%** | **+9.4** |
-| Storage TOU (proposed) | yes | 5 yr | 21.6% | +16.7 |
+| 2023 tariff | no | never | — | −21.2 |
+| 2023 tariff | yes | 10 yr | 2.8% | −2.5 |
+| **Current (Oct 2025)** | no | 10 yr | 4.7% | −1.8 |
+| **Current (Oct 2025)** | **yes** | **6 yr** | **14.8%** | **+8.2** |
+| Storage TOU (proposed) | yes | 5 yr | 20.6% | +15.6 |
 
 *(Low demand-charge saving case. The model also reports "none" and "high" cases.)*
 
@@ -117,4 +119,4 @@ The `#selftest` hash runs the browser engine on the Python reference case and pr
 
 ## License
 
-Released under the [MIT License](LICENSE) Â© 2026 Juwen Lie. Contributions are welcome under the same license; see the [contributing guide](https://github.com/juw12/.github/blob/main/CONTRIBUTING.md) and [Code of Conduct](https://github.com/juw12/.github/blob/main/CODE_OF_CONDUCT.md).
+Released under the [MIT License](LICENSE) © 2026 Juwen Lie. Contributions are welcome under the same license; see the [contributing guide](https://github.com/juw12/.github/blob/main/CONTRIBUTING.md) and [Code of Conduct](https://github.com/juw12/.github/blob/main/CODE_OF_CONDUCT.md).

@@ -18,8 +18,8 @@ REFERENCE = {
     "net_capex_ntd_m": 15.0,
     "cycles_per_year": 496,
     "simple_payback_years": 6,
-    "irr_pct": 15.94,
-    "npv_ntd_m": 9.36,
+    "irr_pct": 14.84,
+    "npv_ntd_m": 8.22,
 }
 
 
@@ -30,6 +30,14 @@ def test_reference_case():
     assert result["simple_payback_years"] == REFERENCE["simple_payback_years"]
     assert abs(result["irr_pct"] - REFERENCE["irr_pct"]) < 0.01
     assert abs(result["npv_ntd_m"] - REFERENCE["npv_ntd_m"]) < 0.01
+
+
+def test_demand_saving_uses_seasonal_rates():
+    # 333 kW shaved: low = 5 x (223.6 - 166.9); high = 5 x 223.6 + 7 x 166.9  (NT$/kW-year)
+    low = project_cashflows("Current (Oct 2025)", subsidy=True, demand_case="low")
+    high = project_cashflows("Current (Oct 2025)", subsidy=True, demand_case="high")
+    assert abs(low["year1_demand_saving_ntd_m"] - 333 * 5 * (223.6 - 166.9) / 1e6) < 1e-6
+    assert abs(high["year1_demand_saving_ntd_m"] - 333 * (5 * 223.6 + 7 * 166.9) / 1e6) < 1e-6
 
 
 def test_2023_tariff_without_subsidy_never_pays_back():
@@ -47,8 +55,8 @@ def test_subsidy_improves_every_tariff():
 
 def test_calculator_contains_same_reference():
     calculator = (Path(__file__).resolve().parents[1] / "docs" / "calculator" / "index.html").read_text(encoding="utf-8")
-    assert "irrPct: 15.94" in calculator
-    assert "npvM: 9.36" in calculator
+    assert "irrPct: 14.84" in calculator
+    assert "npvM: 8.22" in calculator
     assert "value: 9.39" in calculator      # summer peak tariff
     assert "value: 12500" in calculator     # build cost NT$/kWh
 
