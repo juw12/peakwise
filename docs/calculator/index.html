@@ -290,6 +290,12 @@
   }
   .tablewrap {
     overflow-x: auto;
+    /* scroll cue: an edge shadow appears only on the side that has more columns */
+    background:
+      linear-gradient(to right, var(--card) 30%, rgba(255, 255, 255, 0)) left center / 28px 100% no-repeat local,
+      linear-gradient(to left, var(--card) 30%, rgba(255, 255, 255, 0)) right center / 28px 100% no-repeat local,
+      radial-gradient(farthest-side at 0 50%, rgba(23, 33, 43, 0.2), rgba(23, 33, 43, 0)) left center / 12px 100% no-repeat scroll,
+      radial-gradient(farthest-side at 100% 50%, rgba(23, 33, 43, 0.2), rgba(23, 33, 43, 0)) right center / 12px 100% no-repeat scroll;
   }
   table {
     width: 100%;
@@ -538,6 +544,19 @@
     .quote-grid {
       grid-template-columns: minmax(0, 1fr);
     }
+    /* phone/tablet reading order: inputs -> answer -> evidence; the method note comes last */
+    .left {
+      display: contents;
+    }
+    #inputs {
+      order: 1;
+    }
+    #results {
+      order: 2;
+    }
+    .howto {
+      order: 3;
+    }
   }
   @media (min-width: 901px) {
     #shareButton {
@@ -563,7 +582,25 @@
     }
     .preset {
       min-height: 40px;
-      padding: 8px 14px;
+      padding: 6px 8px;
+      line-height: 1.25;
+      text-align: center;
+    }
+    /* three examples as one even row instead of two chips plus an orphan */
+    .presets {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: stretch;
+    }
+    .presets > span {
+      grid-column: 1 / -1;
+    }
+    /* give Details labels room; long values wrap instead of squeezing labels */
+    #detailTable td:first-child {
+      width: 55%;
+    }
+    #detailTable td:last-child {
+      white-space: normal;
     }
     label.check input {
       width: 32px;
