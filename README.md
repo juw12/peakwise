@@ -1,6 +1,6 @@
 <!-- HERO:START -->
 <p align="center">
-  <a href="https://juw12.github.io/watt-reserve/"><img src="docs/media/banner.jpg" alt="Peakwise: Own your power." width="100%"></a>
+  <a href="https://juw12.github.io/peakwise/"><img src="docs/media/banner.jpg" alt="Peakwise: Own your power." width="100%"></a>
 </p>
 
 <p align="center">
@@ -9,15 +9,15 @@
 </p>
 
 <p align="center">
-  <a href="https://juw12.github.io/watt-reserve/"><b>Try it live</b></a> ·
+  <a href="https://juw12.github.io/peakwise/"><b>Try it live</b></a> ·
   <a href="#see-it-in-action">See it in action</a> ·
   <a href="#highlights">Highlights</a> ·
   <a href="https://github.com/juw12">More by juw12</a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/juw12/watt-reserve"><img src="https://img.shields.io/github/last-commit/juw12/watt-reserve?label=updated&color=f59e0b" alt="Last updated"></a>
-  <a href="https://juw12.github.io/watt-reserve/"><img src="https://img.shields.io/badge/demo-live-2ea44f" alt="Live demo"></a>
+  <a href="https://github.com/juw12/peakwise"><img src="https://img.shields.io/github/last-commit/juw12/peakwise?label=updated&color=f59e0b" alt="Last updated"></a>
+  <a href="https://juw12.github.io/peakwise/"><img src="https://img.shields.io/badge/demo-live-2ea44f" alt="Live demo"></a>
   <img src="https://img.shields.io/badge/Web-24292f" alt="Web">
   <img src="https://img.shields.io/badge/Python_model-24292f" alt="Python model">
   <img src="https://img.shields.io/badge/中文_%2F_EN-24292f" alt="Chinese and English">
@@ -45,8 +45,8 @@
 ## See it in action
 
 <p align="center">
-  <a href="https://juw12.github.io/watt-reserve/calculator/"><img src="docs/media/demo.png" alt="Peakwise calculator screenshot" width="820"></a><br>
-  <sub>Open the calculator at <a href="https://juw12.github.io/watt-reserve/calculator/">juw12.github.io/watt-reserve/calculator/</a></sub>
+  <a href="https://juw12.github.io/peakwise/calculator/"><img src="docs/media/demo.png" alt="Peakwise calculator screenshot" width="820"></a><br>
+  <sub>Open the calculator at <a href="https://juw12.github.io/peakwise/calculator/">juw12.github.io/peakwise/calculator/</a></sub>
 </p>
 <!-- HERO:END -->
 
@@ -66,7 +66,7 @@ Unlike the calculators run by battery sellers, **Peakwise** needs no login and n
 
 ## Use the app
 
-1. Open **[juw12.github.io/watt-reserve](https://juw12.github.io/watt-reserve/)** (中文 or English, auto-detected; switch any time).
+1. Open **[juw12.github.io/peakwise](https://juw12.github.io/peakwise/)** (中文 or English, auto-detected; switch any time).
 2. Click **Open the calculator** and enter your contract capacity, peak load, monthly kWh and working days.
 3. Read the recommended size, payback, IRR and 15-year NPV, then **Print / save PDF**.
 
