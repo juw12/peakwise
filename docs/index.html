@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Watt Reserve · Battery Check for Taiwan factories</title>
+<title>Peakwise | Is a factory battery worth it? (Taiwan)</title>
 <meta name="description" content="Free calculator for Taiwan factories: turn your Taipower bill into battery size, MOEA subsidy, payback, IRR and blackout backup in seconds. Runs in your browser.">
-<meta property="og:title" content="Watt Reserve: own your power">
+<meta property="og:title" content="Peakwise 峰值: own your power">
 <meta property="og:description" content="Taipower bill in, factory battery business case out: size, subsidy, payback, IRR, backup.">
 <meta property="og:image" content="https://juw12.github.io/watt-reserve/media/banner.jpg">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
@@ -78,6 +78,10 @@
   }
   .nav-links a:hover {
     color: var(--text);
+  }
+  .nav-links a.btn-primary,
+  .nav-links a.btn-primary:hover {
+    color: #04261b;
   }
   .btn {
     display: inline-block;
@@ -419,14 +423,14 @@
 
 <nav>
   <div class="wrap">
-    <a class="logo" href="#">⚡ Watt<span>Reserve</span></a>
+    <a class="logo" href="#">⚡ Peak<span>wise</span></a>
     <div class="nav-links">
       <a class="hide-mobile" href="#how" data-zh="運作方式">How it works</a>
       <a class="hide-mobile" href="#numbers" data-zh="試算數字">Numbers</a>
       <a class="hide-mobile" href="#roadmap" data-zh="路線圖">Roadmap</a>
       <a class="hide-mobile" href="#faq" data-zh="常見問題">FAQ</a>
       <button class="btn btn-ghost btn-small" id="langToggle" type="button">中文</button>
-      <a class="btn btn-primary btn-small calc-link" href="calculator/" data-zh="開始儲能健檢">Open Battery Check</a>
+      <a class="btn btn-primary btn-small calc-link" href="calculator/" data-zh="開始試算">Open Peakwise</a>
     </div>
   </div>
 </nav>
@@ -441,7 +445,7 @@
         the MOEA subsidy, payback, IRR and blackout backup hours.
       </p>
       <div class="cta-row">
-        <a class="btn btn-primary calc-link" href="calculator/" data-zh="免費儲能健檢 →">Run the free Battery Check →</a>
+        <a class="btn btn-primary calc-link" href="calculator/" data-zh="免費試算 →">Run Peakwise free →</a>
         <a class="btn btn-ghost" href="sample-report.pdf" data-zh="下載範例報告 (PDF)">Sample report (PDF)</a>
       </div>
       <div class="privacy" data-zh="🔒 試算完全在您的瀏覽器中執行，不上傳任何資料、不需註冊。">
@@ -633,7 +637,7 @@
   <div class="wrap">
     <h2 data-zh="先算，再決定。">Run the numbers first.</h2>
     <p class="sub" style="margin: 0 auto 28px;" data-zh="兩分鐘，知道貴廠的儲能值不值得。">Two minutes to know whether a battery pays at your factory.</p>
-    <a class="btn btn-primary calc-link" href="calculator/" data-zh="開始免費儲能健檢 →">Open Battery Check →</a>
+    <a class="btn btn-primary calc-link" href="calculator/" data-zh="開始免費試算 →">Open Peakwise →</a>
   </div>
 </section>
 
@@ -666,8 +670,8 @@ function applyLanguage() {
     link.href = `calculator/?lang=${language}`;
   });
   document.title = language === "zh"
-    ? "Watt Reserve｜台灣工廠表後儲能效益試算"
-    : "Watt Reserve | Factory battery storage calculator for Taiwan";
+    ? "峰值 Peakwise｜台灣工廠儲能值不值得"
+    : "Peakwise | Is a factory battery worth it? (Taiwan)";
 }
 
 document.getElementById("langToggle").addEventListener("click", () => {

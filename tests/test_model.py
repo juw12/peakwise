@@ -1,4 +1,4 @@
-"""Regression and parity tests for the Watt Reserve Taiwan model.
+"""Regression and parity tests for the Peakwise Taiwan model.
 
 Run:  python -m pytest tests      (or: python tests/test_model.py)
 

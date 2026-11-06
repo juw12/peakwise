@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>儲能健檢 Battery Check · Watt Reserve</title>
+<title>峰值 Peakwise｜工廠儲能值不值得</title>
 <meta name="description" content="工廠裝儲能划不划算？免登入、免上傳，用台電電費單 60 秒算出回收年限、報酬率與合理報價。Is a factory battery worth it in Taiwan? 60-second neutral check.">
 <style>
   :root {
@@ -723,8 +723,9 @@
 
 const I18N = {
   zh: {
-    brand: "Watt Reserve",
-    toolName: "儲能健檢",
+    brand: "← 峰值 Peakwise 首頁",
+    toolName: "峰值",
+    pageTitle: "峰值 Peakwise｜工廠儲能值不值得",
     subtitle: "工廠裝儲能划不划算？用台電電費單，60 秒算給你看。",
     chips: ["免登入、免上傳", "不賣電池，立場中立", "不划算會直說", "可檢查廠商報價", "中文 / English"],
     langButton: "English",
@@ -832,7 +833,7 @@ const I18N = {
     notEligible: "不符合",
     sizeCols: ["容量 MWh", "自付淨投資", "第一年節省", "回收", "IRR", "淨現值"],
     hours: "小時",
-    summaryTitle: "【儲能健檢】試算摘要",
+    summaryTitle: "【峰值 Peakwise】試算摘要",
     summaryLines: (r) => [
       `判斷：${r.title}`,
       `建議容量：${r.size} MWh / ${r.power} MW`,
@@ -841,7 +842,7 @@ const I18N = {
       `IRR：${r.irr}｜15 年淨現值：${r.npv}`,
       `最高合理報價：${r.maxFair}/kWh`,
       `完整試算：${r.url}`,
-      "（Watt Reserve 儲能健檢，免登入、不賣電池）",
+      "（峰值 Peakwise：免登入、不賣電池）",
     ],
     notice:
       "本試算為初步估算：以每月尖峰／半尖峰用電推估可放電量，實際容量須依 15 分鐘需量資料、契約容量結構與廠商報價確認。" +
@@ -852,7 +853,7 @@ const I18N = {
       "資料來源：台電 114年10月電價表（高壓三段式：流動電費 夏月尖峰 9.39／半尖峰 5.85／離峰 2.53，非夏月半尖峰 5.47／離峰 2.32 元/度；" +
       "基本電費 經常契約 夏月 223.6／非夏月 166.9、半尖峰契約 166.9 元/瓩·月）；經濟部產業儲能設備補助（每 MWh 500 萬、≤50%、1–10 MWh）；" +
       "建置成本約每 MWh 1,250 萬（聯合報 2025-10）。",
-    disclaimer: "© 2026 Watt Reserve · 開源計算（MIT）· 本工具僅供參考，不構成投資建議。",
+    disclaimer: "© 2026 峰值 Peakwise · 開源計算（MIT）· 本工具僅供參考，不構成投資建議。",
     fields: {
       contractKw: ["經常契約容量 (kW)", "電費單「經常契約」"],
       summerPeakKwh: ["夏月 尖峰 每月用電 (kWh)", "夏月帳單「尖峰」度數（16–22 時）"],
@@ -886,8 +887,9 @@ const I18N = {
     },
   },
   en: {
-    brand: "Watt Reserve",
-    toolName: "Battery Check",
+    brand: "← Peakwise home",
+    toolName: "Peakwise",
+    pageTitle: "Peakwise | Is a factory battery worth it?",
     subtitle: "Is a battery worth it for your Taiwan factory? A 60-second answer from your Taipower bill.",
     chips: ["No login, no upload", "Neutral — we don't sell batteries", "Tells you when it's not worth it", "Checks any quote", "中文 / English"],
     langButton: "中文",
@@ -995,7 +997,7 @@ const I18N = {
     notEligible: "Not eligible",
     sizeCols: ["Size MWh", "Net investment", "Year-1 saving", "Payback", "IRR", "NPV"],
     hours: "h",
-    summaryTitle: "Battery Check — summary",
+    summaryTitle: "Peakwise — summary",
     summaryLines: (r) => [
       `Verdict: ${r.title}`,
       `Recommended size: ${r.size} MWh / ${r.power} MW`,
@@ -1004,7 +1006,7 @@ const I18N = {
       `IRR: ${r.irr} | 15-year NPV: ${r.npv}`,
       `Maximum fair quote: ${r.maxFair}/kWh`,
       `Full calculation: ${r.url}`,
-      "(Watt Reserve Battery Check — no login, we don't sell batteries)",
+      "(Peakwise — no login, we don't sell batteries)",
     ],
     notice:
       "Preliminary estimate: dischargeable energy is inferred from monthly peak / semi-peak consumption. Final sizing needs 15-minute demand data, " +
@@ -1015,7 +1017,7 @@ const I18N = {
       "Sources: Taipower Oct 2025 tariff (high-voltage 3-stage: energy NT$ 9.39 / 5.85 / 2.53 summer, 5.47 / 2.32 non-summer per kWh; " +
       "demand NT$ 223.6 summer / 166.9 non-summer regular contract, 166.9 semi-peak contract per kW-month); MOEA storage subsidy " +
       "(NT$ 5M/MWh, ≤50%, 1–10 MWh); build cost ≈ NT$ 12.5M/MWh (UDN, Oct 2025).",
-    disclaimer: "© 2026 Watt Reserve · open-source maths (MIT) · for information only, not investment advice.",
+    disclaimer: "© 2026 Peakwise · open-source maths (MIT) · for information only, not investment advice.",
     fields: {
       contractKw: ["Regular contract capacity (kW)", "Bill: 經常契約"],
       summerPeakKwh: ["Summer peak kWh per month", "Summer bill 'peak' (16–22)"],
@@ -1183,7 +1185,7 @@ function writeUrl() {
 function applyLanguage() {
   const strings = I18N[language];
   document.documentElement.lang = language === "zh" ? "zh-Hant" : "en";
-  document.title = `${strings.toolName} · Watt Reserve`;
+  document.title = strings.pageTitle;
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = strings[element.dataset.i18n];
   });

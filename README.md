@@ -1,11 +1,11 @@
 <!-- HERO:START -->
 <p align="center">
-  <a href="https://juw12.github.io/watt-reserve/"><img src="docs/media/banner.jpg" alt="Watt Reserve: Own your power." width="100%"></a>
+  <a href="https://juw12.github.io/watt-reserve/"><img src="docs/media/banner.jpg" alt="Peakwise: Own your power." width="100%"></a>
 </p>
 
 <p align="center">
   <b>Own your power.</b><br>
-  A free calculator that tells a Taiwan factory in 60 seconds whether on-site battery storage pays back, using the real Taipower tariff and the MOEA subsidy.
+  <b>Peakwise</b> (峰值) is a free calculator that tells a Taiwan factory in 60 seconds whether on-site battery storage pays back, using the real Taipower tariff and the MOEA subsidy.
 </p>
 
 <p align="center">
@@ -45,7 +45,7 @@
 ## See it in action
 
 <p align="center">
-  <a href="https://juw12.github.io/watt-reserve/calculator/"><img src="docs/media/demo.png" alt="Watt Reserve calculator screenshot" width="820"></a><br>
+  <a href="https://juw12.github.io/watt-reserve/calculator/"><img src="docs/media/demo.png" alt="Peakwise calculator screenshot" width="820"></a><br>
   <sub>Open the calculator at <a href="https://juw12.github.io/watt-reserve/calculator/">juw12.github.io/watt-reserve/calculator/</a></sub>
 </p>
 <!-- HERO:END -->
@@ -58,11 +58,11 @@ Since Taipower's October 2025 tariff update, a high-voltage factory pays **NT$9.
 peak and only **NT$2.53/kWh** off-peak. That NT$6.86 spread, plus the MOEA subsidy of up to
 NT$5M per MWh, turns a behind-the-meter battery from "nice to have" into a 6-year payback.
 
-Most factory owners never run the numbers because a consultant quote takes weeks. Watt Reserve takes
+Most factory owners never run the numbers because a consultant quote takes weeks. Peakwise takes
 your contract capacity, peak load and monthly bill, and tells you in a minute whether a battery is
 worth a site visit.
 
-Unlike the calculators run by battery sellers, **Battery Check** needs no login and no meter-data upload, says plainly when a battery is *not* worth it, shows the downside (cost +20 %, savings −20 %, no subsidy), and gives a shareable link you can send to your boss.
+Unlike the calculators run by battery sellers, **Peakwise** needs no login and no meter-data upload, says plainly when a battery is *not* worth it, shows the downside (cost +20 %, savings −20 %, no subsidy), and gives a shareable link you can send to your boss.
 
 ## Use the app
 

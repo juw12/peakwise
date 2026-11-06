@@ -1,5 +1,5 @@
 """
-Watt Reserve - Taiwan factory pilot economics (behind-the-meter BESS)
+Peakwise - Taiwan factory pilot economics (behind-the-meter BESS)
 =====================================================================
 1 MW / 2 MWh LFP battery behind the meter of a high-voltage (高壓) factory in a
 science / industrial park, on Taipower three-stage time-of-use (三段式時間電價).
